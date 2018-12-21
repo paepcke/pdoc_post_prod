@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Created on Dec 18, 2018
 
@@ -31,7 +32,60 @@ class HandleRes(enumerate):
     HANDLED     = True
     NOT_HANDLED = False
 
+# ---------------------------------- Class ParseInfo -----------------
+
+class ParseInfo(object):
+    '''
+    Holds regexp patterns and other constants used
+    in finding parameter and return doc string fragments
+    in the pdoc HTML output.  
+    '''
+    
+    def __init__(self, delimiter_char):
+        '''
+        Initialize different regexp and other constants
+        depending on whether the delimiter for starting
+        a parameter/type/return, or raises directive. Legal
+        starting delimiters are ':' and '@', as in ':param...',
+        and '@param...'.
+        
+        @param delimiter_char: char literal in [':', '@']
+        @type delimiter_char: char
+        '''
+
+        if delimiter_char not in [':', '@']:
+            raise ValueError("Delimiter char must be one of ':' or '@'.")
+                    
+        self.span_open    = '<span class="sd">        '
+        self.span_close   = '</span>'
+        
+        if delimiter_char == ':':
+            self.parm_markers = [':param', ':type', ':return', ':rtype', ':raises']
+        elif delimiter_char == '@':
+            self.parm_markers = ['@param', '@type', '@return', '@rtype', '@raises']
+        
+        if delimiter_char == ':':
+            # Find <span class="sd">     :param myParm: meaning of my parm</span>
+            self.param_pat    = re.compile('<span class="sd">[ ]*:param([^:]*):([^<]*)</span>$')
+            # Find <span class="sd">     :type myParm: int</span>
+            self.type_pat     = re.compile('<span class="sd">[ ]*:type([^:]*):([^<]*)</span>$')
+            # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
+            self.return_pat   = re.compile('<span class="sd">[ ]*:return[s]{0,1}[:| ]([^<]*)</span>$')
+            # Find <span class="sd">     :rtype int</span> and allow an optional colon after the 'rtype':
+            self.rtype_pat    = re.compile('<span class="sd">[ ]*:rtype[:| ]([^<]*)</span>$')
+            # Find <span class="sd">     :raises ValueError</span> and allow an optional colon after the 'raises':              
+            self.raises_pat   = re.compile('<span class="sd">[ ]*:raises[:| ]([^<]*)</span>$')
+        else:
+            # Same, but using '@' as the delimiter:
+            self.param_pat    = re.compile('<span class="sd">[ ]*@param([^:]*):([^<]*)</span>$')
+            self.type_pat     = re.compile('<span class="sd">[ ]*@type([^:]*):([^<]*)</span>$')
+            # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
+            self.return_pat   = re.compile('<span class="sd">[ ]*@return[s]{0,1}[:| ]([^<]*)</span>$')
+            self.rtype_pat    = re.compile('<span class="sd">[ ]*@rtype[:| ]([^<]*)</span>$')
+            self.raises_pat   = re.compile('<span class="sd">[ ]*@raises[:| ]([^<]*)</span>$')
+
 # ---------------------------------- Class PdocPostProd -----------------
+
 class PdocPostProd(object):
     '''
     Reads a pdoc-produced HTML file. Finds the 
@@ -42,18 +96,10 @@ class PdocPostProd(object):
     :type foo: int
     
     Is turned into: 
-        <b>foo</b> (<i>int</i>): this tells about fum<br>
+        <b>foo</b>(<i>int</i>): this tells about fum<br>
+        
+    Similarly for :return/:rtype, and :raises
     '''
-
-    span_open    = '<span class="sd">        '
-    span_close   = '</span>'
-    parm_markers = [':param', ':type', ':return', ':rtype', ':raises']
-    param_pat    = re.compile('<span class="sd">[ ]*:param([^:]*):([^<]*)</span>$')
-    type_pat     = re.compile('<span class="sd">[ ]*:type([^:]*):([^<]*)</span>$')
-    # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-    return_pat   = re.compile('<span class="sd">[ ]*:return[s]{0,1}[:| ]([^<]*)</span>$')
-    rtype_pat    = re.compile('<span class="sd">[ ]*:rtype[:| ]([^<]*)</span>$')
-    raises_pat   = re.compile('<span class="sd">[ ]*:raises[:| ]([^<]*)</span>$')
         
     #-------------------------
     # Constructor 
@@ -63,24 +109,30 @@ class PdocPostProd(object):
                  in_fd=sys.stdin, 
                  out_fd=sys.stdout,
                  raise_errors=True,
-                 warnings_on=True):
-        '''
-        
-        @param in_fd:
-        @type in_fd:
-        @param out_fd:
-        @type out_fd:
-        @param raise_errors:
-        @type raise_errors:
-        @param warnings_on:
-        @type warnings_on:
-        '''
+                 warnings_on=False,
+                 delimiter_char='@',
+                 force_type_spec=False):
         '''
         Constructor
+        
+        @param in_fd: source of pdoc-produced HTML file. Default: stdin
+        @type in_fd: file-like
+        @param out_fd: destination of transformed html. Default: stdout
+        @type out_fd: file-like
+        @param raise_errors: if True then irregularities will raise errors. Default: True
+        @type raise_errors: boolean
+        @param warnings_on: if True then irregularities generate warnings to stderr.
+            Ignored if raise_errors is True
+        @type warnings_on: boolean
+        @param: delimiter_char: starting char of a directive: ':' or '@'. Default: '@'
+        @type delimiter_char: char
         '''
+        
         self.out_fd = out_fd
         self.raise_errors = raise_errors
         self.warnings = warnings_on
+        self.force_type_spec = force_type_spec
+        self.parseInfo = ParseInfo(delimiter_char)
         self.parse(in_fd)
 
     #-------------------------
@@ -88,9 +140,19 @@ class PdocPostProd(object):
     #--------------
         
     def parse(self, in_fd):
+        '''
+        Goes through each HTML line looking for relevatn
+        doc string snippets to transform 
+        
+        
+        @param in_fd: input stream
+        @type in_fd: file-like
+        '''
         
         self.curr_parm_match = None
         
+        # Try finding in every line each of the special directives,
+        # and transform if found, alse pass through.
         for (line_num, line) in enumerate(in_fd.readlines()):
             line = line.strip()
             if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
@@ -110,16 +172,38 @@ class PdocPostProd(object):
     #--------------
     
     def check_param_spec(self, line, line_num):
+        '''
+        Handle :param and @param.
         
-        parm_match = self.param_pat.search(line)
+        @param line: line to check for directive
+        @type line: str
+        @param line_num: line number in original HTML file. Used for error msgs.
+        @type line_num: int
+        @returns whether the given line was handled and output,
+            or nothing was done.
+        @rtype HandleRes
+        '''
+        
+        parm_match = self.parseInfo.param_pat.search(line)
         if parm_match is None:
             return HandleRes.NOT_HANDLED
         else:
             # Got a parameter spec
+            
             parm_name = parm_match.groups()[0].strip()
             parm_desc = parm_match.groups()[1].strip()
+            # If we had a parameter spec without a
+            # subsequent type spec, and caller requested
+            # forced type, then error:
+            if self.curr_parm_match is not None and self.force_type_spec:
+                (parm_name_prev, _parm_desc_prev) = self.curr_parm_match
+                msg = "Parameter %s does not yet have a type declaration, but parameter %s being described." %\
+                        (parm_name_prev, parm_name)
+                self.error_notify(msg, NoTypeError)
+                return HandleRes.HANDLED
+            
             self.curr_parm_match = (parm_name, parm_desc)
-            self.out_fd.write(self.span_open +\
+            self.out_fd.write(self.parseInfo.span_open +\
                              '<b>' + parm_name + '(<i>'
                              )
             return HandleRes.HANDLED
@@ -129,8 +213,20 @@ class PdocPostProd(object):
     #--------------
     
     def check_type_spec(self, line, line_num):
+        '''
+        Handle :type and @type.
         
-        type_match = self.type_pat.search(line)
+        @param line: line to check for directive
+        @type line: str
+        @param line_num: line number in original HTML file. Used for error msgs.
+        @type line_num: int
+        @returns whether the given line was handled and output,
+            or nothing was done.
+        @rtype HandleRes
+        @raises NoTypeError, NoParamError, ParamTypeMismatch
+        '''
+        
+        type_match = self.parseInfo.type_pat.search(line)
         
         # For convenience and good error messages:
         if self.curr_parm_match is not None:
@@ -169,7 +265,7 @@ class PdocPostProd(object):
             self.out_fd.write(type_desc + \
                              '</i>):</b> ' + \
                              parm_desc + \
-                             self.span_close + \
+                             self.parseInfo.span_close + \
                              '\n'
                              )
             self.curr_parm_match = None
@@ -182,15 +278,26 @@ class PdocPostProd(object):
     #--------------
     
     def check_return_spec(self, line, line_num):
-        return_match = self.return_pat.search(line)
+        '''
+        Handle :return and @return.
+        
+        @param line: line to check for directive
+        @type line: str
+        @param line_num: line number in original HTML file. Used for error msgs.
+        @type line_num: int
+        @returns whether the given line was handled and output,
+            or nothing was done.
+        @rtype HandleRes
+        '''
+        return_match = self.parseInfo.return_pat.search(line)
         if return_match is None:
             return HandleRes.NOT_HANDLED
         else:
             # Got a 'return:' spec
             return_desc = return_match.groups()[0].strip()
-            self.out_fd.write(self.span_open +\
+            self.out_fd.write(self.parseInfo.span_open +\
                              '<b>returns:</b> ' + return_desc + \
-                             self.span_close + \
+                             self.parseInfo.span_close + \
                              '\n'
                               
                              )
@@ -201,16 +308,27 @@ class PdocPostProd(object):
     #--------------
     
     def check_rtype_spec(self, line, line_num):
+        '''
+        Handle :rtype and @rtype.
         
-        rtype_match = self.rtype_pat.search(line)
+        @param line: line to check for directive
+        @type line: str
+        @param line_num: line number in original HTML file. Used for error msgs.
+        @type line_num: int
+        @returns whether the given line was handled and output,
+            or nothing was done.
+        @rtype HandleRes
+        '''
+        
+        rtype_match = self.parseInfo.rtype_pat.search(line)
         if rtype_match is None:
             return HandleRes.NOT_HANDLED
         else:
             # Got an 'rtype:' spec
             rtype_desc = rtype_match.groups()[0].strip()
-            self.out_fd.write(self.span_open +\
+            self.out_fd.write(self.parseInfo.span_open +\
                              '<b>return type:</b> ' + rtype_desc + \
-                             self.span_close + \
+                             self.parseInfo.span_close + \
                              '\n'
                              )
             return HandleRes.HANDLED
@@ -221,16 +339,27 @@ class PdocPostProd(object):
     #--------------
     
     def check_raises_spec(self, line, line_num):
+        '''
+        Handle :raises and @raises.
+        
+        @param line: line to check for directive
+        @type line: str
+        @param line_num: line number in original HTML file. Used for error msgs.
+        @type line_num: int
+        @returns whether the given line was handled and output,
+            or nothing was done.
+        @rtype HandleRes
+        '''
 
-        raises_match = self.raises_pat.search(line)
+        raises_match = self.parseInfo.raises_pat.search(line)
         if raises_match is None:
             return HandleRes.NOT_HANDLED
         else:
             # Got an 'rtype:' spec
             raises_desc = raises_match.groups()[0].strip()
-            self.out_fd.write(self.span_open +\
+            self.out_fd.write(self.parseInfo.span_open +\
                              '<b>raises:</b> ' + raises_desc + \
-                             self.span_close + \
+                             self.parseInfo.span_close + \
                              '\n'
                              )
             return HandleRes.HANDLED
@@ -247,6 +376,17 @@ class PdocPostProd(object):
     #--------------
     
     def error_notify(self, msg, error_inst):
+        '''
+        Handles either raising error, printing
+        warning to stderr, or staying silent. All
+        controlled by parameters to constructor.
+        
+        @param msg: msg to use for error msg or warning
+        @type msg: str
+        @param error_inst: instance of error to raise. Only needed
+            if raise_errors is True in the constructor call.
+        @type error_inst: Exception
+        '''
         if self.raise_errors:
             raise error_inst(msg)
         elif self.warnings:
@@ -254,7 +394,6 @@ class PdocPostProd(object):
         else:
             # No notification
             pass
-        
     
         
 if __name__ == '__main__':
