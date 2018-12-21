@@ -111,7 +111,7 @@ class TestPdocPostProd(unittest.TestCase):
             
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<span class="sd">        <b>tableName(<i>String</i>):</b> name of new table</span>\n' +\
+                       '<span class="sd">        <b>tableName</b> (<b></i>String</i></b>): name of new table</span>\n' +\
                        'Blue is green'
             self.assertEqual(res.strip(), expected)
             # Clean out the capture stream:
@@ -120,7 +120,7 @@ class TestPdocPostProd(unittest.TestCase):
     # testParamMultiline
     #--------------
 
-    #****@skipIf(not RUN_ALL, 'Temporarily disabled')
+    #*****@skipIf(not RUN_ALL, 'Temporarily disabled')
     def testParamMultiline(self):
         for delimiter_char in [':', '@']:
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_long_parm_line, delimiter_char)

@@ -189,22 +189,24 @@ class PdocPostProd(object):
             return HandleRes.NOT_HANDLED
         else:
             # Got a parameter spec
-            
+            # Is there one already, waiting for a type,
+            # and caller has force_type_spec set to True:
+            if self.curr_parm_match is not None:
+                (parm_name_prev, _parm_desc_prev) = self.curr_parm_match
+                if self.force_type_spec:
+                    msg = "Parameter being defined at line %s, but parameter %s still needs a type." %\
+                            (line_num,parm_name_prev)
+                    # Throw error or print warning:
+                    self.error_notify(msg, NoTypeError)
+                self.finish_parameter_spec()
+                self.curr_parm_match = None
+                
             parm_name = parm_match.groups()[0].strip()
             parm_desc = parm_match.groups()[1].strip()
-            # If we had a parameter spec without a
-            # subsequent type spec, and caller requested
-            # forced type, then error:
-            if self.curr_parm_match is not None and self.force_type_spec:
-                (parm_name_prev, _parm_desc_prev) = self.curr_parm_match
-                msg = "Parameter %s does not yet have a type declaration, but parameter %s being described." %\
-                        (parm_name_prev, parm_name)
-                self.error_notify(msg, NoTypeError)
-                return HandleRes.HANDLED
             
             self.curr_parm_match = (parm_name, parm_desc)
             self.out_fd.write(self.parseInfo.span_open +\
-                             '<b>' + parm_name + '(<i>'
+                             '<b>' + parm_name + '</b> '
                              )
             return HandleRes.HANDLED
 
@@ -232,13 +234,11 @@ class PdocPostProd(object):
         if self.curr_parm_match is not None:
             (parm_name, parm_desc) = self.curr_parm_match
             
-        # Have a prior parameter spec, but no type spec at all?
+        # Have a prior parameter spec, but no type spec?
         if type_match is None and self.curr_parm_match is not None:
             # Prev line was a parameter spec, but this line is
-            # not a type spec
-            msg = "Parameter spec (%s) without type; line %s" % (parm_name, line_num)
-            self.error_notify(msg, NoTypeError)
-            self.curr_parm_match = None
+            # not a type spec. That's fine, b/c parameter specs
+            # can be multiline.
             return HandleRes.NOT_HANDLED
         
         # Have a type match but not a prior parameter spec?
@@ -262,8 +262,7 @@ class PdocPostProd(object):
                 return HandleRes.NOT_HANDLED
             
             # Finally...all is good:
-            self.out_fd.write(type_desc + \
-                             '</i>):</b> ' + \
+            self.out_fd.write('(<b></i>' + type_desc + '</i></b>): ' + \
                              parm_desc + \
                              self.parseInfo.span_close + \
                              '\n'
@@ -294,6 +293,8 @@ class PdocPostProd(object):
             return HandleRes.NOT_HANDLED
         else:
             # Got a 'return:' spec
+            # If there is an open parameter spec, finish it:
+            self.finish_parameter_spec()
             return_desc = return_match.groups()[0].strip()
             self.out_fd.write(self.parseInfo.span_open +\
                              '<b>returns:</b> ' + return_desc + \
@@ -325,6 +326,10 @@ class PdocPostProd(object):
             return HandleRes.NOT_HANDLED
         else:
             # Got an 'rtype:' spec
+            
+            # If there is an open parameter spec, finish it:
+            self.finish_parameter_spec()
+            
             rtype_desc = rtype_match.groups()[0].strip()
             self.out_fd.write(self.parseInfo.span_open +\
                              '<b>return type:</b> ' + rtype_desc + \
@@ -356,6 +361,10 @@ class PdocPostProd(object):
             return HandleRes.NOT_HANDLED
         else:
             # Got an 'rtype:' spec
+            
+            # If there is an open parameter spec, finish it:
+            self.finish_parameter_spec()
+            
             raises_desc = raises_match.groups()[0].strip()
             self.out_fd.write(self.parseInfo.span_open +\
                              '<b>raises:</b> ' + raises_desc + \
@@ -363,7 +372,26 @@ class PdocPostProd(object):
                              '\n'
                              )
             return HandleRes.HANDLED
+    
+    #-------------------------
+    # finish_parameter_spec 
+    #--------------
+    
+    def finish_parameter_spec(self):
         
+        if self.curr_parm_match is None:
+            return
+        (parm_name, parm_desc) = self.curr_parm_match
+        # Finish parameter spec without a type spec,
+        # and force type specs is True:
+        if self.force_type_spec:
+            self.error_notify("Parameter %s has no type declaration." % parm_name, NoTypeError)
+        
+        self.out_fd.write(parm_desc +\
+                          self.parseInfo.span_close + \
+                          '\n'
+                          )
+
     #-------------------------
     # write_out 
     #--------------
