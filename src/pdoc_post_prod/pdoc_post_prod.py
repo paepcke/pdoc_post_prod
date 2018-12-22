@@ -124,7 +124,7 @@ class PdocPostProd(object):
         @param warnings_on: if True then irregularities generate warnings to stderr.
             Ignored if raise_errors is True
         @type warnings_on: boolean
-        @param: delimiter_char: starting char of a directive: ':' or '@'. Default: '@'
+        @param delimiter_char: starting char of a directive: ':' or '@'. Default: '@'
         @type delimiter_char: char
         '''
         
@@ -177,6 +177,9 @@ class PdocPostProd(object):
                 self.out_fd.write(line + '\n')
         finally:
             # Ensure that a possibly open parameter spec is closed:
+            if self.curr_parm_match is not None:
+                (_parm_name, parm_desc) = self.curr_parm_match
+                self.out_fd.write(parm_desc.strip() + '\n')
             self.finish_parameter_spec()
             
     #-------------------------
@@ -442,8 +445,15 @@ class PdocPostProd(object):
     
         
 if __name__ == '__main__':
-    with open('/tmp/pdoc_test.py', 'r') as fd:
+    #with open('/tmp/pdoc_test.py', 'r') as fd:
+    #    PdocPostProd(fd)
+    #***********
+    import os
+    with open(os.path.join(os.path.dirname(__file__), '../../pdoc_post_prod.m.html'), 'r') as fd:
         PdocPostProd(fd)
+    #***********        
+    
+#    PdocPostProd()
     
     
     

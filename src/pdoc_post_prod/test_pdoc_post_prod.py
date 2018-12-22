@@ -138,6 +138,25 @@ class TestPdocPostProd(unittest.TestCase):
 
       
     #-------------------------
+    # testParamNoTypeForceWithTypeMissing 
+    #--------------
+        
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    def testParamNoTypeForceWithTypeMissing(self):
+        for delimiter_char in [':', '@']:
+            adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_no_type, delimiter_char)
+            in_stream = StringIO(adjusted_content)
+            PdocPostProd(in_stream,
+                         self.capture_stream, 
+                         delimiter_char=delimiter_char,
+                         force_type_spec=False)
+            res = self.capture_stream.getvalue()
+            expected = 'Foo is bar\n<span class="sd">        <b>tableName</b> name of new table\nBlue is green\n</span>\n'
+            self.assertEqual(res.strip(), expected.strip())
+            # Clean out the capture stream:
+            self.capture_stream = StringIO()            
+
+    #-------------------------
     # testParamWithTypeMissing 
     #--------------
         
