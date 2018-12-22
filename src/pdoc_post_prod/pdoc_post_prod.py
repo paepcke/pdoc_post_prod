@@ -55,10 +55,7 @@ class ParseInfo(object):
 
         if delimiter_char not in [':', '@']:
             raise ValueError("Delimiter char must be one of ':' or '@'.")
-                    
-        self.span_open    = '<span class="sd">        '
-        self.span_close   = '</span>'
-        
+                   
         if delimiter_char == ':':
             self.parm_markers = [':param', ':type', ':return', ':rtype', ':raises']
         elif delimiter_char == '@':
@@ -66,23 +63,23 @@ class ParseInfo(object):
         
         if delimiter_char == ':':
             # Find <span class="sd">     :param myParm: meaning of my parm</span>
-            self.param_pat    = re.compile('<span class="sd">[ ]*:param([^:]*):([^<]*)</span>$')
+            self.param_pat    = re.compile('[ ]*:param([^:]*):(.*)$')
             # Find <span class="sd">     :type myParm: int</span>
-            self.type_pat     = re.compile('<span class="sd">[ ]*:type([^:]*):([^<]*)</span>$')
+            self.type_pat     = re.compile('[ ]*:type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('<span class="sd">[ ]*:return[s]{0,1}[:| ]([^<]*)</span>$')
+            self.return_pat   = re.compile('[ ]*:return[s]{0,1}[:| ](.*)$')
             # Find <span class="sd">     :rtype int</span> and allow an optional colon after the 'rtype':
-            self.rtype_pat    = re.compile('<span class="sd">[ ]*:rtype[:| ]([^<]*)</span>$')
+            self.rtype_pat    = re.compile('[ ]*:rtype[:| ](.*)$')
             # Find <span class="sd">     :raises ValueError</span> and allow an optional colon after the 'raises':              
-            self.raises_pat   = re.compile('<span class="sd">[ ]*:raises[:| ]([^<]*)</span>$')
+            self.raises_pat   = re.compile('[ ]*:raises[:| ](.*)$')
         else:
             # Same, but using '@' as the delimiter:
-            self.param_pat    = re.compile('<span class="sd">[ ]*@param([^:]*):([^<]*)</span>$')
-            self.type_pat     = re.compile('<span class="sd">[ ]*@type([^:]*):([^<]*)</span>$')
+            self.param_pat    = re.compile('[ ]*@param([^:]*):(.*)$')
+            self.type_pat     = re.compile('[ ]*@type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('<span class="sd">[ ]*@return[s]{0,1}[:| ]([^<]*)</span>$')
-            self.rtype_pat    = re.compile('<span class="sd">[ ]*@rtype[:| ]([^<]*)</span>$')
-            self.raises_pat   = re.compile('<span class="sd">[ ]*@raises[:| ]([^<]*)</span>$')
+            self.return_pat   = re.compile('[ ]*@return[s]{0,1}[:| ](.*)$')
+            self.rtype_pat    = re.compile('[ ]*@rtype[:| ](.*)$')
+            self.raises_pat   = re.compile('[ ]*@raises[:| ](.*)$')
 
 # ---------------------------------- Class PdocPostProd -----------------
 
@@ -171,15 +168,16 @@ class PdocPostProd(object):
                 # line:
                 if self.curr_parm_match is not None:
                     (param_name, param_desc) = self.curr_parm_match
-                    param_desc += '\n' + line +'\n'
+                    param_desc += ' ' + line
                     self.curr_parm_match = (param_name, param_desc)
                     continue
-                self.out_fd.write(line + '\n')
+                if len(line) > 0:
+                    self.out_fd.write(line + ('' if line.endswith('\n') else '\n'))
         finally:
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
                 (_parm_name, parm_desc) = self.curr_parm_match
-                self.out_fd.write(parm_desc.strip() + '\n')
+                self.out_fd.write(parm_desc.strip())
             self.finish_parameter_spec()
             
     #-------------------------
@@ -403,13 +401,8 @@ class PdocPostProd(object):
             self.error_notify('No type spec found for parameter %s at line %s' %\
                               (parm_name, line_no), NoTypeError
                               )
-        
-        # Parameter description will already have 
-        # a closing '</span>\n' if its multi-line.
-        # Else add that closure here: 
-        if not parm_desc.endswith('</span>\n'):
-            self.out_fd.write(self.parseInfo.span_close + '\n')
-                          
+        if not parm_desc.endswith('\n'):
+            self.out_fd.write('\n')
         self.curr_parm_match = None
 
     #-------------------------
@@ -449,7 +442,7 @@ if __name__ == '__main__':
     #    PdocPostProd(fd)
     #***********
     import os
-    with open(os.path.join(os.path.dirname(__file__), '../../pdoc_post_prod.m.html'), 'r') as fd:
+    with open(os.path.join(os.path.dirname(__file__), 'src/pdoc_post_prod.pdoc_post_prod.py'), 'r') as fd:
         PdocPostProd(fd)
     #***********        
     

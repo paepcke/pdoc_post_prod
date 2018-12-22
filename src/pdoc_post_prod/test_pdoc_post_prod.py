@@ -17,78 +17,75 @@ class TestPdocPostProd(unittest.TestCase):
 
     content_good = \
     '''Foo is bar
-       <span class="sd">        :param tableName: name of new table</span>
-       <span class="sd">        :type tableName: String</span>
+       :param tableName: name of new table
+       :type tableName: String
        Blue is green
        '''
     content_long_parm_line = \
     '''Foo is bar
-       <span class="sd">        :param tableName: name of new table</span>
-       <span class="sd">            that I created just for you.</span>       
-       <span class="sd">        :type tableName: String</span>
+       :param tableName: name of new table
+           that I created just for you.       
+       :type tableName: String
        Blue is green
        '''
     content_no_type = \
     '''Foo is bar
-       <span class="sd">        :param tableName: name of new table</span>
+       :param tableName: name of new table
        Blue is green
        '''
     content_no_param = \
     '''Foo is bar
-       <span class="sd">        :type tableName: String</span>
+       :type tableName: String
        Blue is green
        '''
     
     content_param_type_mismatch = \
     '''Foo is bar
-       <span class="sd">        :param tableName: name of new table</span>
-       <span class="sd">        :type bluebell: String</span>
+       :param tableName: name of new table
+       :type bluebell: String
        Blue is green
        '''
     content_return_variationA = \
     '''Foo is bar
-       <span class="sd">        :return a number between 1 and 10</span>
+       :return a number between 1 and 10
        Blue is green
        '''
     content_return_variationB = \
     '''Foo is bar
-       <span class="sd">        :returns a number between 1 and 10</span>
+       :returns a number between 1 and 10
        Blue is green
        '''
     content_return_variationC = \
     '''Foo is bar
-       <span class="sd">        :return: a number between 1 and 10</span>
+       :return: a number between 1 and 10
        Blue is green
        '''
     content_return_variationD = \
     '''Foo is bar
-       <span class="sd">        :returns: a number between 1 and 10</span>
+       :returns: a number between 1 and 10
        Blue is green
        '''
     content_rtype_variationA = \
     '''Foo is bar
-       <span class="sd">        :rtype {int | str}</span>
+       :rtype {int | str}
        Blue is green
        '''
     content_rtype_variationB = \
     '''Foo is bar
-       <span class="sd">        :rtype: {int | str}</span>
+       :rtype: {int | str}
        Blue is green
        '''    
     
     content_raises_variationA = \
     '''Foo is bar
-       <span class="sd">        :raises ValueError</span>
+       :raises ValueError
        Blue is green
        '''
     content_raises_variationB = \
     '''Foo is bar
-       <span class="sd">        :raises: ValueError</span>
+       :raises: ValueError
        Blue is green
        '''    
-    
-    
-    
     
     #-------------------------
     # setUp 
@@ -111,9 +108,9 @@ class TestPdocPostProd(unittest.TestCase):
             
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<span class="sd">        <b>tableName</b> (<b></i>String</i></b>): name of new table</span>\n' +\
-                       'Blue is green'
-            self.assertEqual(res.strip(), expected)
+                       '<b>tableName</b> (<b></i>String</i></b>): name of new table\n' +\
+                       'Blue is green\n'
+            self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
     #-------------------------
@@ -129,10 +126,9 @@ class TestPdocPostProd(unittest.TestCase):
              
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<span class="sd">        <b>tableName</b> (<b></i>String</i></b>): name of new table\n' +\
-                       '<span class="sd">            that I created just for you.</span>\n' +\
-                       'Blue is green' 
-            self.assertEqual(res.strip(), expected)
+                       '<b>tableName</b> (<b></i>String</i></b>): name of new table that I created just for you.\n' +\
+                       'Blue is green\n'            
+            self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
 
@@ -151,7 +147,7 @@ class TestPdocPostProd(unittest.TestCase):
                          delimiter_char=delimiter_char,
                          force_type_spec=False)
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n<span class="sd">        <b>tableName</b> name of new table\nBlue is green\n</span>\n'
+            expected = 'Foo is bar\n<b>tableName</b> name of new table Blue is green\n'
             self.assertEqual(res.strip(), expected.strip())
             # Clean out the capture stream:
             self.capture_stream = StringIO()            
@@ -213,7 +209,7 @@ class TestPdocPostProd(unittest.TestCase):
                 
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
-                           '<span class="sd">        <b>returns:</b> a number between 1 and 10</span>\n' +\
+                           '<b>returns:</b> a number between 1 and 10\n' +\
                            'Blue is green'
                 self.assertEqual(res.strip(), expected)
                 # Make a new capture stream so the old
@@ -236,7 +232,7 @@ class TestPdocPostProd(unittest.TestCase):
                 
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
-                           '<span class="sd">        <b>return type:</b> {int | str}</span>\n' +\
+                           '<b>return type:</b> {int | str}\n' +\
                            'Blue is green'
                 self.assertEqual(res.strip(), expected)
                 # Make a new capture stream so the old
@@ -261,7 +257,7 @@ class TestPdocPostProd(unittest.TestCase):
                 
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
-                           '<span class="sd">        <b>raises:</b> ValueError</span>\n' +\
+                           '<b>raises:</b> ValueError\n' +\
                            'Blue is green'
                 self.assertEqual(res.strip(), expected)
                 # Make a new capture stream so the old
