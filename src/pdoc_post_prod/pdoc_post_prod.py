@@ -151,21 +151,33 @@ class PdocPostProd(object):
         
         self.curr_parm_match = None
         
-        # Try finding in every line each of the special directives,
-        # and transform if found, alse pass through.
-        for (line_num, line) in enumerate(in_fd.readlines()):
-            line = line.strip()
-            if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
-                continue
-            if self.check_type_spec(line, line_num)  == HandleRes.HANDLED:
-                continue
-            if self.check_return_spec(line, line_num)  == HandleRes.HANDLED:
-                continue
-            if self.check_rtype_spec(line, line_num) == HandleRes.HANDLED:
-                continue
-            if self.check_raises_spec(line, line_num) == HandleRes.HANDLED:
-                continue
-            self.out_fd.write(line + '\n')
+        try:
+            # Try finding in every line each of the special directives,
+            # and transform if found, alse pass through.
+            for (line_num, line) in enumerate(in_fd.readlines()):
+                line = line.strip()
+                if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
+                    continue
+                if self.check_type_spec(line, line_num)  == HandleRes.HANDLED:
+                    continue
+                if self.check_return_spec(line, line_num)  == HandleRes.HANDLED:
+                    continue
+                if self.check_rtype_spec(line, line_num) == HandleRes.HANDLED:
+                    continue
+                if self.check_raises_spec(line, line_num) == HandleRes.HANDLED:
+                    continue
+                # A regular line to output. Are we in the middle of
+                # a parameter specification? If so, this is likely a continuation
+                # line:
+                if self.curr_parm_match is not None:
+                    (param_name, param_desc) = self.curr_parm_match
+                    param_desc += '\n' + line +'\n'
+                    self.curr_parm_match = (param_name, param_desc)
+                    continue
+                self.out_fd.write(line + '\n')
+        finally:
+            # Ensure that a possibly open parameter spec is closed:
+            self.finish_parameter_spec()
             
     #-------------------------
     # check_param_spec 
@@ -263,10 +275,9 @@ class PdocPostProd(object):
             
             # Finally...all is good:
             self.out_fd.write('(<b></i>' + type_desc + '</i></b>): ' + \
-                             parm_desc + \
-                             self.parseInfo.span_close + \
-                             '\n'
+                             parm_desc
                              )
+            self.finish_parameter_spec(type_found=True, line_no=line_num)
             self.curr_parm_match = None
             return HandleRes.HANDLED
         # Not a type spec, and no prior param spec:
@@ -377,20 +388,26 @@ class PdocPostProd(object):
     # finish_parameter_spec 
     #--------------
     
-    def finish_parameter_spec(self):
+    def finish_parameter_spec(self, type_found=False, line_no=None):
         
         if self.curr_parm_match is None:
             return
-        (parm_name, parm_desc) = self.curr_parm_match
-        # Finish parameter spec without a type spec,
-        # and force type specs is True:
-        if self.force_type_spec:
-            self.error_notify("Parameter %s has no type declaration." % parm_name, NoTypeError)
         
-        self.out_fd.write(parm_desc +\
-                          self.parseInfo.span_close + \
-                          '\n'
-                          )
+        (parm_name, parm_desc) = self.curr_parm_match
+        # We are to enforce type specs then ensure that
+        # we have a type:
+        if self.force_type_spec and not type_found:
+            self.error_notify('No type spec found for parameter %s at line %s' %\
+                              (parm_name, line_no), NoTypeError
+                              )
+        
+        # Parameter description will already have 
+        # a closing '</span>\n' if its multi-line.
+        # Else add that closure here: 
+        if not parm_desc.endswith('</span>\n'):
+            self.out_fd.write(self.parseInfo.span_close + '\n')
+                          
+        self.curr_parm_match = None
 
     #-------------------------
     # write_out 

@@ -10,8 +10,8 @@ from unittest import skipIf
 from pdoc_post_prod.pdoc_post_prod import PdocPostProd 
 from pdoc_post_prod.pdoc_post_prod import NoParamError, NoTypeError, ParamTypeMismatch
 
-#*****RUN_ALL = True
-RUN_ALL = False
+RUN_ALL = True
+#RUN_ALL = False
 
 class TestPdocPostProd(unittest.TestCase):
 
@@ -120,7 +120,7 @@ class TestPdocPostProd(unittest.TestCase):
     # testParamMultiline
     #--------------
 
-    #*****@skipIf(not RUN_ALL, 'Temporarily disabled')
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
     def testParamMultiline(self):
         for delimiter_char in [':', '@']:
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_long_parm_line, delimiter_char)
@@ -129,8 +129,9 @@ class TestPdocPostProd(unittest.TestCase):
              
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<span class="sd">        <b>tableName(<i>String</i>):</b> name of new table</span>\n' +\
-                       'Blue is green'
+                       '<span class="sd">        <b>tableName</b> (<b></i>String</i></b>): name of new table\n' +\
+                       '<span class="sd">            that I created just for you.</span>\n' +\
+                       'Blue is green' 
             self.assertEqual(res.strip(), expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
@@ -146,7 +147,10 @@ class TestPdocPostProd(unittest.TestCase):
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_no_type, delimiter_char)
             in_stream = StringIO(adjusted_content)
             with self.assertRaises(NoTypeError):
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPostProd(in_stream,
+                             self.capture_stream, 
+                             delimiter_char=delimiter_char,
+                             force_type_spec=True)
 
     #-------------------------
     # testTypeWithParamMissing 
