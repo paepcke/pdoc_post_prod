@@ -7,7 +7,7 @@ from _io import StringIO
 import unittest
 from unittest import skipIf
 
-from pdoc_post_prod.pdoc_post_prod import PdocPostProd 
+from pdoc_post_prod.pdoc_post_prod import PdocPostProd , ParseInfo
 from pdoc_post_prod.pdoc_post_prod import NoParamError, NoTypeError, ParamTypeMismatch
 
 RUN_ALL = True
@@ -324,14 +324,56 @@ class TestPdocPostProd(unittest.TestCase):
     # testDocStrDetection 
     #--------------
     
-    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    #*******@skipIf(not RUN_ALL, 'Temporarily disabled')
     def testDocStrDetection(self):
-        in_stream = '''
-                    """
-                    Multiline docstring
-                    with double quotes
-                    """
-                    '''
+        line1 = "'''"
+        line2 = 'Multiline docstring\n'
+        line3 = 'with single quotes\n'
+        line4 = "'''"
+        line5 = "Other stuff."
+        
+        parse_info = ParseInfo('@')
+        self.assertTrue(parse_info.in_docstr(line1))
+        self.assertTrue(parse_info.in_docstr(line2))
+        self.assertTrue(parse_info.in_docstr(line3))
+        self.assertFalse(parse_info.in_docstr(line4))
+        self.assertFalse(parse_info.in_docstr(line5))
+
+        # Same with double-quote docstrings:        
+        line1 = '"""'
+        line2 = 'Multiline docstring\n'
+        line3 = 'with single quotes\n'
+        line4 = '"""'
+        line5 = "Other stuff."
+        
+        parse_info = ParseInfo('@')
+        self.assertTrue(parse_info.in_docstr(line1))
+        self.assertTrue(parse_info.in_docstr(line2))
+        self.assertTrue(parse_info.in_docstr(line3))
+        self.assertFalse(parse_info.in_docstr(line4))
+        self.assertFalse(parse_info.in_docstr(line5))
+        
+        # Single-line doc strings:
+        line1 = "Other stuff"
+        line2 = "'''My single line doc string.'''\n"
+        line3 = "More stuff"
+
+        parse_info = ParseInfo('@')
+        self.assertFalse(parse_info.in_docstr(line1))
+        self.assertFalse(parse_info.in_docstr(line2))
+        self.assertFalse(parse_info.in_docstr(line3))
+                
+        # Mixing single triple quote into a double quote docstr:
+        line1 = '"""Here is the \'\'\'deal\'\'\' for you."""'
+        
+        parse_info = ParseInfo('@')
+        self.assertFalse(parse_info.in_docstr(line1))
+        
+        # Escaped quotes:
+        line1 = "'''Here is the \'\'\'deal\'\'\' for you.'''"
+        parse_info = ParseInfo('@')
+        self.assertFalse(parse_info.in_docstr(line1))
+        
         
     #-------------------------
     # set_delimiter_char 

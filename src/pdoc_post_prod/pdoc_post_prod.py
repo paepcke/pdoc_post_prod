@@ -60,6 +60,8 @@ class ParseInfo(object):
         @type delimiter_char: char
         '''
 
+        self.curr_in_docstr = False
+        
         if delimiter_char not in [':', '@']:
             raise ValueError("Delimiter char must be one of ':' or '@'.")
                    
@@ -93,6 +95,80 @@ class ParseInfo(object):
             self.rtype_pat    = re.compile(r'(^[ ]+)@rtype[:| ]{0,1}(.*)$')
             # Accepts 'raise', 'raises', and 'raised'                          
             self.raises_pat   = re.compile(r'(^[ ]+)@raise[s|d]{0,1}[:| ]{0,1}(.*)$')
+
+        self.triple_single_quote_pat = re.compile(r"[']{3}")
+        self.triple_double_quote_pat = re.compile(r'["]{3}')
+
+
+    #-------------------------
+    # in_docstr 
+    #--------------
+
+    def in_docstr(self, line):
+        '''
+        Given a string, return True if parsing is currently in a
+        docstr, else False. Handles delimiters triple single-quotes
+        and triple double-quotes. 
+        
+        Maintains self.curr_in_docstr for needed context
+        
+        @param line: one line of text
+        @type line: str
+        '''
+        
+        
+        single_quote_match = self.triple_single_quote_pat.search(line)
+        double_quote_match = self.triple_double_quote_pat.search(line)
+        
+        # Check trivial, and most frequent case:
+        if single_quote_match is None and double_quote_match is None and not self.curr_in_docstr:
+            return False
+        
+        # For convenience:
+        in_docstr = self.curr_in_docstr
+                
+        # Existing single quote docstr?
+        if in_docstr == "'''" and single_quote_match is None:
+            return True
+        
+        # Closing an open single quote docstr?
+        if in_docstr == "'''" and single_quote_match is not None:
+            self.curr_in_docstr = False
+            return False
+        
+        # Existing double quote docstr?
+        if in_docstr == '"""' and double_quote_match is None:
+            return True
+        
+        # Closing an open double quote docstr?
+        if in_docstr == '"""' and double_quote_match is not None:
+            self.curr_in_docstr = False
+            return False
+
+        # We know that no docstring already open before call.
+        
+        # Check for one-line docstr:
+        if single_quote_match is not None:
+            # Is there a closing triple single quote?
+            if self.triple_single_quote_pat.search(line[single_quote_match.end():]) is not None:
+                # There was a second triple single quote:
+                return False
+            
+        # Same for double quotes:
+        if double_quote_match is not None:
+            # Is there a closing triple double quote?
+            if self.triple_double_quote_pat.search(line[double_quote_match.end():]) is not None:
+                # There was a second triple double quote:
+                return False
+        
+        # Must be start of a new docstring:         
+        if not in_docstr and single_quote_match is not None:
+            self.curr_in_docstr = "'''"
+            return True
+        if not in_docstr and double_quote_match is not None:
+            self.curr_in_docstr = '"""'
+            return True
+
 
 # ---------------------------------- Class PdocPostProd -----------------
 
@@ -166,6 +242,14 @@ class PdocPostProd(object):
             # Try finding in every line each of the special directives,
             # and transform if found, alse pass through.
             for (line_num, line) in enumerate(in_fd.readlines()):
+
+                # Ensure that the empty line between docstring intros and
+                # the parameter specification start gets a </br>:
+                if self.parseInfo.curr_in_docstr and \
+                   self.parseInfo.line_blank_pat.search(line) is not None:
+                    self.out_fd.write(self.parseInfo.line_sep)
+                    continue
+                
                 if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
                     continue
                 if self.check_type_spec(line, line_num)  == HandleRes.HANDLED:
@@ -191,14 +275,16 @@ class PdocPostProd(object):
                 if self.curr_return_desc is not None:
                     self.curr_return_desc += ' ' + line.strip()
                     continue
-        
-                # Is there anything at all in the current line, incl.
-                # maybe just a newline?
-                if self.parseInfo.line_blank_pat.search(line) is None:
-                    # Yes, only blank space. If there is a NL,
-                    # leave the line alone, else add an HTML break:
-                    self.out_fd.write(line + \
-                                      ('' if line.endswith('\n') else self.parseInfo.line_sep))
+
+#*************************        
+#                 # Is there anything at all in the current line, incl.
+#                 # maybe just a newline?
+#                 if self.parseInfo.line_blank_pat.search(line) is None:
+#                     # Yes, only blank space. If there is a NL,
+#                     # leave the line alone, else add an HTML break:
+#                     self.out_fd.write(line + \
+#                                       ('' if line.endswith('\n') else self.parseInfo.line_sep))
+#*************************
         finally:
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
@@ -514,69 +600,6 @@ class PdocPostProd(object):
 
         self.curr_return_desc = None
 
-    #-------------------------
-    # in_docstr 
-    #--------------
-
-    @classmethod
-    def in_docstr(self, line):
-        single_quote_match = self.parseInfo.triple_single_quote_pat.search(line)
-        double_quote_match = self.parseInfo.triple_double_quote_pat.search(line)
-        
-        # Check trivial, and most frequent case:
-        if single_quote_match is None and double_quote_match is None and self.curr_in_docstr is None:
-            return False
-        
-        
-        # For convenience:
-        delim = self.curr_in_docstr
-                
-        # Existing single quote docstr?
-        if delim == "'''" and single_quote_match is None:
-            return True
-        
-        # Closing an open single quote docstr?
-        if delim == "'''" and single_quote_match is not None:
-            self.curr_in_docstr = None
-            return False
-        
-        # Existing double quote docstr?
-        if delim == '"""' and double_quote_match is None:
-            return True
-        
-        # Closing an open double quote docstr?
-        if delim == '"""' and double_quote_match is not None:
-            self.curr_in_docstr = False
-            return False
-
-        # We know that no docstring already open before call.
-        
-        # Check for one-line docstr:
-        if single_quote_match is not None:
-            # Is there a closing triple single quote?
-            if self.parseInfo.triple_single_quote_pat.search(line[single_quote_match.end():]) is not None:
-                # There was a second triple single quote:
-                return False
-            
-        # Same for double quotes:
-        if double_quote_match is not None:
-            # Is there a closing triple double quote?
-            if self.parseInfo.triple_double_quote_pat.search(line[double_quote_match.end():]) is not None:
-                # There was a second triple double quote:
-                return False
-        
-        # Must be start of a new docstring:         
-        if delim is None and single_quote_match is not None:
-            self.curr_in_docstr = "'''"
-            return True
-        if delim is None and double_quote_match is not None:
-            self.curr_in_docstr = '"""'
-            return True
-        
-        
-        
-        
-            
 
     #-------------------------
     # write_out 
