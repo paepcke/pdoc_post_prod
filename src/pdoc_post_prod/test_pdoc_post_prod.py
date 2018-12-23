@@ -108,8 +108,8 @@ class TestPdocPostProd(unittest.TestCase):
             
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<b>tableName</b> (<b></i>String</i></b>): name of new table\n' +\
-                       'Blue is green\n'
+                       '<b> tableName</b> (<b></i> String</i></b>):  name of new table\n' +\
+                       '       Blue is green\n       \n'
             self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
@@ -126,8 +126,8 @@ class TestPdocPostProd(unittest.TestCase):
              
             res = self.capture_stream.getvalue()
             expected = 'Foo is bar\n' +\
-                       '<b>tableName</b> (<b></i>String</i></b>): name of new table that I created just for you.\n' +\
-                       'Blue is green\n'            
+                       '<b> tableName</b> (<b></i> String</i></b>):  name of new table            that I created just for you.       \n' +\
+                       '       Blue is green\n       \n'            
             self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
@@ -147,7 +147,7 @@ class TestPdocPostProd(unittest.TestCase):
                          delimiter_char=delimiter_char,
                          force_type_spec=False)
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n<b>tableName</b> name of new table Blue is green\n'
+            expected = 'Foo is bar\n<b> tableName</b>  name of new table        Blue is green\n'
             self.assertEqual(res.strip(), expected.strip())
             # Clean out the capture stream:
             self.capture_stream = StringIO()            
@@ -210,8 +210,8 @@ class TestPdocPostProd(unittest.TestCase):
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
                            '<b>returns:</b> a number between 1 and 10\n' +\
-                           'Blue is green'
-                self.assertEqual(res.strip(), expected)
+                           '       Blue is green\n       \n'
+                self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
                 self.capture_stream = StringIO()
@@ -233,8 +233,8 @@ class TestPdocPostProd(unittest.TestCase):
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
                            '<b>return type:</b> {int | str}\n' +\
-                           'Blue is green'
-                self.assertEqual(res.strip(), expected)
+                           '       Blue is green\n       \n'
+                self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
                 self.capture_stream = StringIO()
@@ -258,8 +258,8 @@ class TestPdocPostProd(unittest.TestCase):
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
                            '<b>raises:</b> ValueError\n' +\
-                           'Blue is green'
-                self.assertEqual(res.strip(), expected)
+                           '       Blue is green\n       \n'
+                self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
                 self.capture_stream = StringIO()

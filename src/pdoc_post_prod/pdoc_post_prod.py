@@ -62,24 +62,24 @@ class ParseInfo(object):
             self.parm_markers = ['@param', '@type', '@return', '@rtype', '@raises']
         
         if delimiter_char == ':':
-            # Find <span class="sd">     :param myParm: meaning of my parm</span>
+            # Find :param myParm: meaning of my parm
             self.param_pat    = re.compile('[ ]*:param([^:]*):(.*)$')
-            # Find <span class="sd">     :type myParm: int</span>
+            # Find :type myParm: int
             self.type_pat     = re.compile('[ ]*:type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('[ ]*:return[s]{0,1}[:| ](.*)$')
-            # Find <span class="sd">     :rtype int</span> and allow an optional colon after the 'rtype':
-            self.rtype_pat    = re.compile('[ ]*:rtype[:| ](.*)$')
-            # Find <span class="sd">     :raises ValueError</span> and allow an optional colon after the 'raises':              
-            self.raises_pat   = re.compile('[ ]*:raises[:| ](.*)$')
+            self.return_pat   = re.compile('[ ]*:return[s]{0,1}[:| ]{0,1}(.*)$')
+            # Find :rtype int</span> and allow an optional colon after the 'rtype':
+            self.rtype_pat    = re.compile('[ ]*:rtype[:| ]{0,1}(.*)$')
+            # Find :raises ValueError, and allow an optional colon after the 'raises':              
+            self.raises_pat   = re.compile('[ ]*:raises[:| ]{0,1}(.*)$')
         else:
             # Same, but using '@' as the delimiter:
             self.param_pat    = re.compile('[ ]*@param([^:]*):(.*)$')
             self.type_pat     = re.compile('[ ]*@type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('[ ]*@return[s]{0,1}[:| ](.*)$')
-            self.rtype_pat    = re.compile('[ ]*@rtype[:| ](.*)$')
-            self.raises_pat   = re.compile('[ ]*@raises[:| ](.*)$')
+            self.return_pat   = re.compile('[ ]*@return[s]{0,1}[:| ]{0,1}(.*)$')
+            self.rtype_pat    = re.compile('[ ]*@rtype[:| ]{0,1}(.*)$')
+            self.raises_pat   = re.compile('[ ]*@raises[:| ]{0,1}(.*)$')
 
 # ---------------------------------- Class PdocPostProd -----------------
 
@@ -152,7 +152,7 @@ class PdocPostProd(object):
             # Try finding in every line each of the special directives,
             # and transform if found, alse pass through.
             for (line_num, line) in enumerate(in_fd.readlines()):
-                line = line.strip()
+                #********line = line if len(line) == 0 else line.rstrip()
                 if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
                     continue
                 if self.check_type_spec(line, line_num)  == HandleRes.HANDLED:
@@ -177,7 +177,7 @@ class PdocPostProd(object):
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
                 (_parm_name, parm_desc) = self.curr_parm_match
-                self.out_fd.write(parm_desc.strip())
+                self.out_fd.write(parm_desc.rstrip())
             self.finish_parameter_spec()
             
     #-------------------------
@@ -214,13 +214,11 @@ class PdocPostProd(object):
                 self.finish_parameter_spec()
                 self.curr_parm_match = None
                 
-            parm_name = parm_match.groups()[0].strip()
-            parm_desc = parm_match.groups()[1].strip()
+            parm_name = parm_match.groups()[0].rstrip()
+            parm_desc = parm_match.groups()[1].rstrip()
             
             self.curr_parm_match = (parm_name, parm_desc)
-            self.out_fd.write(self.parseInfo.span_open +\
-                             '<b>' + parm_name + '</b> '
-                             )
+            self.out_fd.write('<b>' + parm_name + '</b> ')
             return HandleRes.HANDLED
 
     #-------------------------
@@ -264,8 +262,8 @@ class PdocPostProd(object):
         elif type_match is not None and self.curr_parm_match is not None:
             # Had a prior ":param" line, and now a type.  
             # Ensure that the type is about the same parameter:
-            type_name = type_match.groups()[0].strip()
-            type_desc = type_match.groups()[1].strip()
+            type_name = type_match.groups()[0].rstrip()
+            type_desc = type_match.groups()[1].rstrip()
             if type_name != parm_name:
                 # Have a parm spec followed by a type spec,
                 # but the type spec doesn't match the parameter:
@@ -304,16 +302,11 @@ class PdocPostProd(object):
         if return_match is None:
             return HandleRes.NOT_HANDLED
         else:
-            # Got a 'return:' spec
+            # Got a 'return: ' or 'return ' or 'returns ' or 'returns ' spec
             # If there is an open parameter spec, finish it:
             self.finish_parameter_spec()
             return_desc = return_match.groups()[0].strip()
-            self.out_fd.write(self.parseInfo.span_open +\
-                             '<b>returns:</b> ' + return_desc + \
-                             self.parseInfo.span_close + \
-                             '\n'
-                              
-                             )
+            self.out_fd.write('<b>returns:</b> ' + return_desc + '\n')
             return HandleRes.HANDLED
     
     #-------------------------
@@ -343,11 +336,7 @@ class PdocPostProd(object):
             self.finish_parameter_spec()
             
             rtype_desc = rtype_match.groups()[0].strip()
-            self.out_fd.write(self.parseInfo.span_open +\
-                             '<b>return type:</b> ' + rtype_desc + \
-                             self.parseInfo.span_close + \
-                             '\n'
-                             )
+            self.out_fd.write('<b>return type:</b> ' + rtype_desc + '\n')
             return HandleRes.HANDLED
         
 
@@ -378,11 +367,7 @@ class PdocPostProd(object):
             self.finish_parameter_spec()
             
             raises_desc = raises_match.groups()[0].strip()
-            self.out_fd.write(self.parseInfo.span_open +\
-                             '<b>raises:</b> ' + raises_desc + \
-                             self.parseInfo.span_close + \
-                             '\n'
-                             )
+            self.out_fd.write('<b>raises:</b> ' + raises_desc + '\n')
             return HandleRes.HANDLED
     
     #-------------------------
@@ -441,12 +426,13 @@ if __name__ == '__main__':
     #with open('/tmp/pdoc_test.py', 'r') as fd:
     #    PdocPostProd(fd)
     #***********
+    #***********
     import os
-    with open(os.path.join(os.path.dirname(__file__), 'src/pdoc_post_prod.pdoc_post_prod.py'), 'r') as fd:
+    with open(os.path.join(os.path.dirname(__file__), 'pdoc_post_prod.py'), 'r') as fd:
         PdocPostProd(fd)
-    #***********        
+    #***********
     
-#    PdocPostProd()
+    PdocPostProd()
     
     
     
