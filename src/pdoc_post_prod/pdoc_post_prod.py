@@ -207,8 +207,7 @@ class PdocPostProd(object):
                 self.finish_parameter_spec(type_found=False, line_no=line_num)
             # Same for return spec:                
             elif self.curr_return_desc is not None:
-                self.out_fd.write(self.curr_return_desc.rstrip())
-                self.finish_return_spec(line_num)
+                self.finish_return_spec(rtype_found=False, line_no=line_num)
             
 
     #-------------------------
@@ -393,8 +392,9 @@ class PdocPostProd(object):
         else:
             # Got an 'rtype:' spec
             
-            # If there is an open parameter spec, finish it:
+            # If there is an open parameter or return spec, finish it:
             self.finish_parameter_spec()
+            self.finish_return_spec(rtype_found=True, line_no=line_num)
             
             # Have groups like this:
             #    ('       ', '{int | str}')
@@ -483,7 +483,7 @@ class PdocPostProd(object):
     # finish_return_spec 
     #--------------
     
-    def finish_return_spec(self, line_no=None):
+    def finish_return_spec(self, rtype_found=False, line_no=None):
         '''
         If a return spec is being constructed, finish it. If
         no return spec is being constructed, do nothing.
@@ -491,6 +491,8 @@ class PdocPostProd(object):
         Return specs are closed adding a line separator if
         non is already part of the return_desc part of curr_return_desc.  
         
+        @param rtype_found: whether a type specification was found
+        @type rtype_found: bool        
         @param line_no: line in which parameter spec was found. Used
             in error messages.
         @type line_no: int
@@ -499,6 +501,14 @@ class PdocPostProd(object):
         if self.curr_return_desc is None:
             return
         
+        # We are to enforce type specs then ensure that
+        # we have an rtype:
+        if self.force_type_spec and not rtype_found:
+            self.error_notify('No return type (rtype spec) found by line %s' %\
+                              (line_no), NoTypeError
+                              )
+        
+        self.out_fd.write(self.curr_return_desc)
         if not self.curr_return_desc.endswith(self.parseInfo.line_sep):
             self.out_fd.write(self.parseInfo.line_sep)
 

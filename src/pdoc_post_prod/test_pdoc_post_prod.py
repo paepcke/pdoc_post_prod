@@ -87,6 +87,23 @@ class TestPdocPostProd(unittest.TestCase):
        Blue is green
        '''    
     
+    content_return_multiline = \
+    '''Foo is bar
+       :returns a number between 1 and 10
+           I love Lucy
+       :rtype int
+       Blue is green
+       '''
+
+    content_return_no_rtype = \
+    '''Foo is bar
+       :returns a number between 1 and 10
+           I love Lucy
+       :param foo: Blue is green
+       :type foo: int
+       '''
+
+    
     #-------------------------
     # setUp 
     #--------------
@@ -210,7 +227,7 @@ class TestPdocPostProd(unittest.TestCase):
                 res = self.capture_stream.getvalue()
                 expected = 'Foo is bar\n' +\
                            '       <b>returns:</b> a number between 1 and 10' +\
-                           ' Blue is green</br>'
+                           ' Blue is green </br>'
                 self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
@@ -262,6 +279,46 @@ class TestPdocPostProd(unittest.TestCase):
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
                 self.capture_stream = StringIO()
+        
+    #-------------------------
+    # testMultiReturnLine 
+    #--------------
+        
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    def testMultiReturnLine(self):
+        for delimiter_char in [':', '@']:
+            _input = TestPdocPostProd.content_return_multiline
+            adjusted_content = self.set_delimiter_char(_input, delimiter_char)
+            in_stream      = StringIO(adjusted_content)
+            PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+            
+            res = self.capture_stream.getvalue()
+            expected = 'Foo is bar\n' +\
+                       '       <b>returns:</b> a number between 1 and 10 I love Lucy</br>' +\
+                       '       <b>return type:</b> int</br>' +\
+                       '       Blue is green\n'
+            self.assertEqual(res, expected)
+            # Make a new capture stream so the old
+            # content won't confuse us on the next loop:
+            self.capture_stream = StringIO()
+
+    #-------------------------
+    # testNoRtype 
+    #--------------
+
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    def testNoRtype(self):
+        for delimiter_char in [':', '@']:
+            adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_return_no_rtype, delimiter_char)
+            in_stream = StringIO(adjusted_content)
+
+            with self.assertRaises(NoTypeError):
+                PdocPostProd(in_stream, 
+                             self.capture_stream, 
+                             delimiter_char=delimiter_char,
+                             force_type_spec=True)
+            # Clean out the capture stream:
+            self.capture_stream = StringIO()            
         
     #-------------------------
     # set_delimiter_char 
