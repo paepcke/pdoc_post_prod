@@ -70,7 +70,7 @@ class ParseInfo(object):
 
         self.line_sep = '</br>'
         
-        self.line_blank_pat = re.compile(r'^[\s]*$')
+        self.line_blank_pat    = re.compile(r'^[\s]*$')
         
         if delimiter_char == ':':
             # Find :param myParm: meaning of my parm
@@ -514,6 +514,69 @@ class PdocPostProd(object):
 
         self.curr_return_desc = None
 
+    #-------------------------
+    # in_docstr 
+    #--------------
+
+    @classmethod
+    def in_docstr(self, line):
+        single_quote_match = self.parseInfo.triple_single_quote_pat.search(line)
+        double_quote_match = self.parseInfo.triple_double_quote_pat.search(line)
+        
+        # Check trivial, and most frequent case:
+        if single_quote_match is None and double_quote_match is None and self.curr_in_docstr is None:
+            return False
+        
+        
+        # For convenience:
+        delim = self.curr_in_docstr
+                
+        # Existing single quote docstr?
+        if delim == "'''" and single_quote_match is None:
+            return True
+        
+        # Closing an open single quote docstr?
+        if delim == "'''" and single_quote_match is not None:
+            self.curr_in_docstr = None
+            return False
+        
+        # Existing double quote docstr?
+        if delim == '"""' and double_quote_match is None:
+            return True
+        
+        # Closing an open double quote docstr?
+        if delim == '"""' and double_quote_match is not None:
+            self.curr_in_docstr = False
+            return False
+
+        # We know that no docstring already open before call.
+        
+        # Check for one-line docstr:
+        if single_quote_match is not None:
+            # Is there a closing triple single quote?
+            if self.parseInfo.triple_single_quote_pat.search(line[single_quote_match.end():]) is not None:
+                # There was a second triple single quote:
+                return False
+            
+        # Same for double quotes:
+        if double_quote_match is not None:
+            # Is there a closing triple double quote?
+            if self.parseInfo.triple_double_quote_pat.search(line[double_quote_match.end():]) is not None:
+                # There was a second triple double quote:
+                return False
+        
+        # Must be start of a new docstring:         
+        if delim is None and single_quote_match is not None:
+            self.curr_in_docstr = "'''"
+            return True
+        if delim is None and double_quote_match is not None:
+            self.curr_in_docstr = '"""'
+            return True
+        
+        
+        
+        
+            
 
     #-------------------------
     # write_out 

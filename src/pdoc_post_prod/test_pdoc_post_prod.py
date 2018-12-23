@@ -318,7 +318,20 @@ class TestPdocPostProd(unittest.TestCase):
                              delimiter_char=delimiter_char,
                              force_type_spec=True)
             # Clean out the capture stream:
-            self.capture_stream = StringIO()            
+            self.capture_stream = StringIO()           
+            
+    #-------------------------
+    # testDocStrDetection 
+    #--------------
+    
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    def testDocStrDetection(self):
+        in_stream = '''
+                    """
+                    Multiline docstring
+                    with double quotes
+                    """
+                    '''
         
     #-------------------------
     # set_delimiter_char 
