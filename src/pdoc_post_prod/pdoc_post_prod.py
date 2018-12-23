@@ -2,7 +2,9 @@
 '''
 Created on Dec 18, 2018
 
-Post production upgrade of HTML output from the pdoc
+Prepares Python files with 
+
+Pre production upgrade of HTML output from the pdoc
 Python documentation tool (https://pypi.org/project/pdoc/).
 
 The pdoc HTML output does not consider function/method
@@ -15,7 +17,7 @@ by pdoc to provide that special treatment.
 Note: it would be more sensible to include this functionality in
 the pdoc HTML production code itself. 
      
-@author: paepcke
+@author: Andreas Paepcke
 '''
 import re
 import sys
@@ -23,9 +25,14 @@ import sys
 # ---------------------------------- Special Exception and Enums -----------------
 class NoTypeError(Exception):
     pass
+
 class NoParamError(Exception):
     pass
+
 class ParamTypeMismatch(Exception):
+    pass
+
+class DoubleReturnError(Exception):
     pass
 
 class HandleRes(enumerate):
@@ -60,26 +67,32 @@ class ParseInfo(object):
             self.parm_markers = [':param', ':type', ':return', ':rtype', ':raises']
         elif delimiter_char == '@':
             self.parm_markers = ['@param', '@type', '@return', '@rtype', '@raises']
+
+        self.line_sep = '</br>'
+        
+        self.line_blank_pat = re.compile(r'^[\s]*$')
         
         if delimiter_char == ':':
             # Find :param myParm: meaning of my parm
-            self.param_pat    = re.compile('[ ]*:param([^:]*):(.*)$')
+            self.param_pat    = re.compile(r'(^[ ]+):param([^:]*):(.*)$')
             # Find :type myParm: int
-            self.type_pat     = re.compile('[ ]*:type([^:]*):(.*)$')
+            self.type_pat     = re.compile(r'(^[ ]+):type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('[ ]*:return[s]{0,1}[:| ]{0,1}(.*)$')
+            self.return_pat   = re.compile(r'(^[ ]+):return[s]{0,1}[:| ]{0,1}(.*)$')
             # Find :rtype int</span> and allow an optional colon after the 'rtype':
-            self.rtype_pat    = re.compile('[ ]*:rtype[:| ]{0,1}(.*)$')
-            # Find :raises ValueError, and allow an optional colon after the 'raises':              
-            self.raises_pat   = re.compile('[ ]*:raises[:| ]{0,1}(.*)$')
+            self.rtype_pat    = re.compile(r'(^[ ]+):rtype[:| ]{0,1}(.*)$')
+            # Find :raises ValueError, and allow an optional colon after the 'raises'.
+            # Accepts 'raise', 'raises', and 'raised'              
+            self.raises_pat   = re.compile(r'(^[ ]+):raise[s|d]{0,1}[:| ]{0,1}(.*)$')
         else:
             # Same, but using '@' as the delimiter:
-            self.param_pat    = re.compile('[ ]*@param([^:]*):(.*)$')
-            self.type_pat     = re.compile('[ ]*@type([^:]*):(.*)$')
+            self.param_pat    = re.compile(r'(^[ ]+)@param([^:]*):(.*)$')
+            self.type_pat     = re.compile(r'(^[ ]+)@type([^:]*):(.*)$')
             # Be forgiving; accept ':return ', ':return:', ':returns ', and ':returns:' 
-            self.return_pat   = re.compile('[ ]*@return[s]{0,1}[:| ]{0,1}(.*)$')
-            self.rtype_pat    = re.compile('[ ]*@rtype[:| ]{0,1}(.*)$')
-            self.raises_pat   = re.compile('[ ]*@raises[:| ]{0,1}(.*)$')
+            self.return_pat   = re.compile(r'(^[ ]+)@return[s]{0,1}[:| ]{0,1}(.*)$')
+            self.rtype_pat    = re.compile(r'(^[ ]+)@rtype[:| ]{0,1}(.*)$')
+            # Accepts 'raise', 'raises', and 'raised'                          
+            self.raises_pat   = re.compile(r'(^[ ]+)@raise[s|d]{0,1}[:| ]{0,1}(.*)$')
 
 # ---------------------------------- Class PdocPostProd -----------------
 
@@ -147,12 +160,12 @@ class PdocPostProd(object):
         '''
         
         self.curr_parm_match = None
+        self.curr_return_desc = None
         
         try:
             # Try finding in every line each of the special directives,
             # and transform if found, alse pass through.
             for (line_num, line) in enumerate(in_fd.readlines()):
-                #********line = line if len(line) == 0 else line.rstrip()
                 if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
                     continue
                 if self.check_type_spec(line, line_num)  == HandleRes.HANDLED:
@@ -163,6 +176,7 @@ class PdocPostProd(object):
                     continue
                 if self.check_raises_spec(line, line_num) == HandleRes.HANDLED:
                     continue
+
                 # A regular line to output. Are we in the middle of
                 # a parameter specification? If so, this is likely a continuation
                 # line:
@@ -171,15 +185,32 @@ class PdocPostProd(object):
                     param_desc += ' ' + line
                     self.curr_parm_match = (param_name, param_desc)
                     continue
-                if len(line) > 0:
-                    self.out_fd.write(line + ('' if line.endswith('\n') else '\n'))
+                
+                # Are we in the middle of a return specification? If so, this 
+                # is likely a continuation line:
+                if self.curr_return_desc is not None:
+                    self.curr_return_desc += ' ' + line.strip()
+                    continue
+        
+                # Is there anything at all in the current line, incl.
+                # maybe just a newline?
+                if self.parseInfo.line_blank_pat.search(line) is None:
+                    # Yes, only blank space. If there is a NL,
+                    # leave the line alone, else add an HTML break:
+                    self.out_fd.write(line + \
+                                      ('' if line.endswith('\n') else self.parseInfo.line_sep))
         finally:
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
                 (_parm_name, parm_desc) = self.curr_parm_match
                 self.out_fd.write(parm_desc.rstrip())
-            self.finish_parameter_spec()
+                self.finish_parameter_spec(type_found=False, line_no=line_num)
+            # Same for return spec:                
+            elif self.curr_return_desc is not None:
+                self.out_fd.write(self.curr_return_desc.rstrip())
+                self.finish_return_spec(line_num)
             
+
     #-------------------------
     # check_param_spec 
     #--------------
@@ -214,11 +245,16 @@ class PdocPostProd(object):
                 self.finish_parameter_spec()
                 self.curr_parm_match = None
                 
-            parm_name = parm_match.groups()[0].rstrip()
-            parm_desc = parm_match.groups()[1].rstrip()
+            # The regexp groups look like this:
+            #    ('       ', ' tableName', ' name of new table')
+            # Keep the indentation before the parameter name:
+            frags = parm_match.groups()
+            indent    = frags[0]
+            parm_name = frags[1].strip()
+            parm_desc = frags[2].strip()
             
             self.curr_parm_match = (parm_name, parm_desc)
-            self.out_fd.write('<b>' + parm_name + '</b> ')
+            self.out_fd.write(indent + '<b>' + parm_name + '</b> ')
             return HandleRes.HANDLED
 
     #-------------------------
@@ -262,8 +298,15 @@ class PdocPostProd(object):
         elif type_match is not None and self.curr_parm_match is not None:
             # Had a prior ":param" line, and now a type.  
             # Ensure that the type is about the same parameter:
-            type_name = type_match.groups()[0].rstrip()
-            type_desc = type_match.groups()[1].rstrip()
+            
+            # Have groups like this:
+            #    ('       ', ' tableName', ' String')
+            # Keep the indentation before the parameter name:
+            frags = type_match.groups()
+            _indent    = frags[0]
+            type_name = frags[1].strip()
+            type_desc = frags[2].strip()
+
             if type_name != parm_name:
                 # Have a parm spec followed by a type spec,
                 # but the type spec doesn't match the parameter:
@@ -301,13 +344,31 @@ class PdocPostProd(object):
         return_match = self.parseInfo.return_pat.search(line)
         if return_match is None:
             return HandleRes.NOT_HANDLED
-        else:
-            # Got a 'return: ' or 'return ' or 'returns ' or 'returns ' spec
-            # If there is an open parameter spec, finish it:
-            self.finish_parameter_spec()
-            return_desc = return_match.groups()[0].strip()
-            self.out_fd.write('<b>returns:</b> ' + return_desc + '\n')
-            return HandleRes.HANDLED
+    
+        # Got a 'return: ' or 'return ' or 'returns ' or 'returns ' spec
+        # If there is an open parameter spec, finish it:
+
+        # Finish any possibly open parameter spec:        
+        self.finish_parameter_spec()
+
+        # Is there is (an open) return spec already, that's bad, only one allowed.
+        # We don't check for already completed prior return specs. We should.
+        
+        if self.curr_return_desc is not None:
+            msg = "Only one 'return' specification allowed per docstring (line %s)" % line_num
+            self.error_notify(msg, DoubleReturnError)
+            self.finish_return_spec()
+            self.curr_return_desc = None
+
+        # Have groups like this:
+        #    ('       ', 'a number between 1 and 10')
+        # Keep the indentation before the parameter name:
+        frags = return_match.groups()
+        indent    = frags[0]
+        self.curr_return_desc = frags[1].strip()
+
+        self.out_fd.write(indent + '<b>returns:</b> ')
+        return HandleRes.HANDLED
     
     #-------------------------
     # check_rtype_spec 
@@ -335,10 +396,15 @@ class PdocPostProd(object):
             # If there is an open parameter spec, finish it:
             self.finish_parameter_spec()
             
-            rtype_desc = rtype_match.groups()[0].strip()
-            self.out_fd.write('<b>return type:</b> ' + rtype_desc + '\n')
+            # Have groups like this:
+            #    ('       ', '{int | str}')
+            # Keep the indentation before the parameter name:
+            frags = rtype_match.groups()
+            indent     = frags[0]
+            rtype_desc = frags[1].strip()
+            
+            self.out_fd.write(indent + '<b>return type:</b> ' + rtype_desc + self.parseInfo.line_sep)
             return HandleRes.HANDLED
-        
 
     #-------------------------
     # check_raises_spec 
@@ -366,8 +432,14 @@ class PdocPostProd(object):
             # If there is an open parameter spec, finish it:
             self.finish_parameter_spec()
             
-            raises_desc = raises_match.groups()[0].strip()
-            self.out_fd.write('<b>raises:</b> ' + raises_desc + '\n')
+            # Have groups like this:
+            #    ('       ', 'ValueError')
+            # Keep the indentation before the parameter name:
+            frags = raises_match.groups()
+            indent    = frags[0]
+            raises_desc = frags[1].strip()
+            
+            self.out_fd.write(indent + '<b>raises:</b> ' + raises_desc + self.parseInfo.line_sep)
             return HandleRes.HANDLED
     
     #-------------------------
@@ -375,6 +447,22 @@ class PdocPostProd(object):
     #--------------
     
     def finish_parameter_spec(self, type_found=False, line_no=None):
+        '''
+        If a parameter spec is being constructed, finish it. If
+        no parameter spec is being constructed, do nothing. If
+        type_found is False, and client has indicated force_type_spec
+        when instantiating this object, an error is raised.
+        
+        Parameters specs are closed adding a line separator if
+        non is already part of the param_desc part of curr_parm_match.  
+        
+        @param type_found: whether a type specification was found
+        @type type_found: bool
+        @param line_no: line in which parameter spec was found. Used
+            in error messages.
+        @type line_no: int
+        @raised NoTypeError
+        '''
         
         if self.curr_parm_match is None:
             return
@@ -386,9 +474,36 @@ class PdocPostProd(object):
             self.error_notify('No type spec found for parameter %s at line %s' %\
                               (parm_name, line_no), NoTypeError
                               )
-        if not parm_desc.endswith('\n'):
-            self.out_fd.write('\n')
+        if not parm_desc.endswith(self.parseInfo.line_sep):
+            self.out_fd.write(self.parseInfo.line_sep)
+
         self.curr_parm_match = None
+
+    #-------------------------
+    # finish_return_spec 
+    #--------------
+    
+    def finish_return_spec(self, line_no=None):
+        '''
+        If a return spec is being constructed, finish it. If
+        no return spec is being constructed, do nothing.
+        
+        Return specs are closed adding a line separator if
+        non is already part of the return_desc part of curr_return_desc.  
+        
+        @param line_no: line in which parameter spec was found. Used
+            in error messages.
+        @type line_no: int
+        '''
+        
+        if self.curr_return_desc is None:
+            return
+        
+        if not self.curr_return_desc.endswith(self.parseInfo.line_sep):
+            self.out_fd.write(self.parseInfo.line_sep)
+
+        self.curr_return_desc = None
+
 
     #-------------------------
     # write_out 
@@ -423,16 +538,14 @@ class PdocPostProd(object):
     
         
 if __name__ == '__main__':
-    #with open('/tmp/pdoc_test.py', 'r') as fd:
-    #    PdocPostProd(fd)
-    #***********
-    #***********
+
+    # Create preprocessed file from this file:
     import os
     with open(os.path.join(os.path.dirname(__file__), 'pdoc_post_prod.py'), 'r') as fd:
         PdocPostProd(fd)
     #***********
     
-    PdocPostProd()
+    #****PdocPostProd()
     
     
     
