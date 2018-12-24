@@ -16,10 +16,11 @@ RUN_ALL = True
 class TestPdocPostProd(unittest.TestCase):
 
     content_good = \
-    '''Foo is bar
+    '''"""Foo is bar
        :param tableName: name of new table
        :type tableName: String
        Blue is green
+       """
        '''
     content_long_parm_line = \
     '''Foo is bar
@@ -88,11 +89,12 @@ class TestPdocPostProd(unittest.TestCase):
        '''    
     
     content_return_multiline = \
-    '''Foo is bar
+    '''"""Foo is bar
        :returns a number between 1 and 10
            I love Lucy
        :rtype int
        Blue is green
+       """
        '''
 
     content_return_no_rtype = \
@@ -293,10 +295,10 @@ class TestPdocPostProd(unittest.TestCase):
             PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
             
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n' +\
+            expected = '"""Foo is bar\n' +\
                        '       <b>returns:</b> a number between 1 and 10 I love Lucy</br>' +\
                        '       <b>return type:</b> int</br>' +\
-                       '       Blue is green\n'
+                       '       Blue is green\n       """\n       '
             self.assertEqual(res, expected)
             # Make a new capture stream so the old
             # content won't confuse us on the next loop:

@@ -242,7 +242,26 @@ class PdocPostProd(object):
             # Try finding in every line each of the special directives,
             # and transform if found, alse pass through.
             for (line_num, line) in enumerate(in_fd.readlines()):
-
+                
+                # Before consuming current line, which could finish
+                # a docstr we are currently processing, remember
+                # state now:
+                in_docstr_before_this_line = self.parseInfo.curr_in_docstr
+                
+                # Update whether in docstr or not:
+                self.parseInfo.in_docstr(line)
+                
+                # If we just left a docstr, complete any multiline
+                # parameter or return specs:
+                if not self.parseInfo.curr_in_docstr and in_docstr_before_this_line:
+                    self.handle_multiline_spec(line): 
+                
+                # If not in a docstring (possibly just as of this
+                # line having the closing quotes):
+                if not self.parseInfo.curr_in_docstr:
+                    self.out_fd.write(line)
+                    continue
+                
                 # Ensure that the empty line between docstring intros and
                 # the parameter specification start gets a </br>:
                 if self.parseInfo.curr_in_docstr and \
@@ -261,20 +280,11 @@ class PdocPostProd(object):
                 if self.check_raises_spec(line, line_num) == HandleRes.HANDLED:
                     continue
 
-                # A regular line to output. Are we in the middle of
-                # a parameter specification? If so, this is likely a continuation
-                # line:
-                if self.curr_parm_match is not None:
-                    (param_name, param_desc) = self.curr_parm_match
-                    param_desc += ' ' + line
-                    self.curr_parm_match = (param_name, param_desc)
-                    continue
-                
-                # Are we in the middle of a return specification? If so, this 
-                # is likely a continuation line:
-                if self.curr_return_desc is not None:
-                    self.curr_return_desc += ' ' + line.strip()
-                    continue
+                # We are in a docstring area, but not in 
+                # any parameter/return/type spec:
+                self.out_fd.write(line)
+                continue
+
 
 #*************************        
 #                 # Is there anything at all in the current line, incl.
@@ -294,7 +304,36 @@ class PdocPostProd(object):
             # Same for return spec:                
             elif self.curr_return_desc is not None:
                 self.finish_return_spec(rtype_found=False, line_no=line_num)
-            
+        
+    #-------------------------
+    # handle_multiline_spec 
+    #--------------
+    
+    def handle_multiline_spec(self, line):
+        '''
+        Both, parameter and return specifications can 
+        run across multiple lines. Those lines need
+        to be collected and placed into one string.
+        
+        @param line: current line to parse
+        @type line: str
+        @returns True if a multiline was detected, else False
+        @rtype bool
+        '''
+        # In the middle of a multiline parm spec?
+        if self.curr_parm_match is not None:
+            (param_name, param_desc) = self.curr_parm_match
+            param_desc += ' ' + line
+            self.curr_parm_match = (param_name, param_desc)
+            return True
+        
+        # Are we in the middle of a return specification? If so, this 
+        # is likely a continuation line:
+        if self.curr_return_desc is not None:
+            self.curr_return_desc += ' ' + line.strip()
+            return True
+        
+        return False
 
     #-------------------------
     # check_param_spec 
