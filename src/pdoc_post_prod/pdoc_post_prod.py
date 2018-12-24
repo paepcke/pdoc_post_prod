@@ -251,21 +251,19 @@ class PdocPostProd(object):
                 # Update whether in docstr or not:
                 self.parseInfo.in_docstr(line)
                 
-                # If we just left a docstr, complete any multiline
-                # parameter or return specs:
-                if not self.parseInfo.curr_in_docstr and in_docstr_before_this_line:
-                    self.handle_multiline_spec(line): 
+                # If we are not in a docstr, just pass the line though.
+                # But special case: if it's the current line that finishes
+                # a docstr, we need to process it. Could be something like
+                #      :return'''
                 
-                # If not in a docstring (possibly just as of this
-                # line having the closing quotes):
-                if not self.parseInfo.curr_in_docstr:
+                if not self.parseInfo.curr_in_docstr and not in_docstr_before_this_line:
                     self.out_fd.write(line)
                     continue
                 
-                # Ensure that the empty line between docstring intros and
-                # the parameter specification start gets a </br>:
-                if self.parseInfo.curr_in_docstr and \
-                   self.parseInfo.line_blank_pat.search(line) is not None:
+                # We are working through a docstr:
+                
+                # Empty lines within a docstr get a terminating </br>:
+                if self.is_blank_line(line):
                     self.out_fd.write(self.parseInfo.line_sep)
                     continue
                 
@@ -280,21 +278,18 @@ class PdocPostProd(object):
                 if self.check_raises_spec(line, line_num) == HandleRes.HANDLED:
                     continue
 
+                if self.curr_parm_match is not None:
+                    self.append_to_parm_desc(line)
+                    continue
+                elif self.curr_return_desc is not None:
+                    self.append_to_return_desc(line)
+                    continue
+
                 # We are in a docstring area, but not in 
                 # any parameter/return/type spec:
                 self.out_fd.write(line)
                 continue
 
-
-#*************************        
-#                 # Is there anything at all in the current line, incl.
-#                 # maybe just a newline?
-#                 if self.parseInfo.line_blank_pat.search(line) is None:
-#                     # Yes, only blank space. If there is a NL,
-#                     # leave the line alone, else add an HTML break:
-#                     self.out_fd.write(line + \
-#                                       ('' if line.endswith('\n') else self.parseInfo.line_sep))
-#*************************
         finally:
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
@@ -605,6 +600,43 @@ class PdocPostProd(object):
         self.curr_parm_match = None
 
     #-------------------------
+    # append_to_parm_desc 
+    #--------------
+    
+    def append_to_parm_desc(self, line):
+        '''
+        Assuming that we are currently processing a
+        parameter spec, append line to the parameter description.
+        We assume that self.curr_parm_match is a tuple:
+        (parm_name, parm_desc).
+        
+        Surrounding white space in line is removed.
+        
+        @param line: text to add
+        @type line: str
+        '''
+        (_parm_name, parm_desc) = self.curr_parm_match
+        self.curr_parm_match = (_parm_name, parm_desc + ' ' + line.strip())
+
+    #-------------------------
+    # append_to_return_desc 
+    #--------------
+    
+    def append_to_return_desc(self, line):
+        '''
+        Assuming that we are currently processing a
+        return spec, append line to the return description.
+        We assume that self.curr_return_desc is a string!
+        
+        Surrounding white space in line is removed.
+        
+        @param line: text to add
+        @type line: str
+        '''
+        self.curr_return_desc += ' ' + line.strip()
+     
+
+    #-------------------------
     # finish_return_spec 
     #--------------
     
@@ -638,6 +670,14 @@ class PdocPostProd(object):
             self.out_fd.write(self.parseInfo.line_sep)
 
         self.curr_return_desc = None
+
+    #-------------------------
+    # is_blank_line 
+    #--------------
+    
+    def is_blank_line(self, line ):
+        
+        return self.parseInfo.line_blank_pat.search(line) is not None        
 
 
     #-------------------------

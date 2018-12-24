@@ -3,12 +3,12 @@ Created on Dec 20, 2018
 
 @author: paepcke
 '''
-from _io import StringIO
+from io import StringIO
 import unittest
 from unittest import skipIf
 
-from pdoc_post_prod.pdoc_post_prod import PdocPostProd , ParseInfo
-from pdoc_post_prod.pdoc_post_prod import NoParamError, NoTypeError, ParamTypeMismatch
+from .pdoc_post_prod import PdocPostProd , ParseInfo
+from .pdoc_post_prod import NoParamError, NoTypeError, ParamTypeMismatch
 
 RUN_ALL = True
 #RUN_ALL = False
@@ -20,73 +20,72 @@ class TestPdocPostProd(unittest.TestCase):
        :param tableName: name of new table
        :type tableName: String
        Blue is green
-       """
-       '''
+       """'''
     content_long_parm_line = \
-    '''Foo is bar
+    '''"""Foo is bar
        :param tableName: name of new table
            that I created just for you.       
        :type tableName: String
        Blue is green
-       '''
+       """'''
     content_no_type = \
-    '''Foo is bar
+    '''"""Foo is bar
        :param tableName: name of new table
        Blue is green
-       '''
+       """'''
     content_no_param = \
-    '''Foo is bar
+    '''"""Foo is bar
        :type tableName: String
        Blue is green
-       '''
+       """'''
     
     content_param_type_mismatch = \
-    '''Foo is bar
+    '''"""Foo is bar
        :param tableName: name of new table
        :type bluebell: String
        Blue is green
-       '''
+       """'''
     content_return_variationA = \
-    '''Foo is bar
+    '''"""Foo is bar
        :return a number between 1 and 10
        Blue is green
-       '''
+       """'''
     content_return_variationB = \
-    '''Foo is bar
+    '''"""Foo is bar
        :returns a number between 1 and 10
        Blue is green
-       '''
+       """'''
     content_return_variationC = \
-    '''Foo is bar
+    '''"""Foo is bar
        :return: a number between 1 and 10
        Blue is green
-       '''
+       """'''
     content_return_variationD = \
-    '''Foo is bar
+    '''"""Foo is bar
        :returns: a number between 1 and 10
        Blue is green
-       '''
+       """'''
     content_rtype_variationA = \
-    '''Foo is bar
+    '''"""Foo is bar
        :rtype {int | str}
        Blue is green
-       '''
+       """'''
     content_rtype_variationB = \
-    '''Foo is bar
+    '''"""Foo is bar
        :rtype: {int | str}
        Blue is green
-       '''    
+       """'''    
     
     content_raises_variationA = \
-    '''Foo is bar
+    '''"""Foo is bar
        :raises ValueError
        Blue is green
-       '''
+       """'''
     content_raises_variationB = \
-    '''Foo is bar
+    '''"""Foo is bar
        :raises: ValueError
        Blue is green
-       '''    
+       """'''    
     
     content_return_multiline = \
     '''"""Foo is bar
@@ -94,16 +93,15 @@ class TestPdocPostProd(unittest.TestCase):
            I love Lucy
        :rtype int
        Blue is green
-       """
-       '''
+       """'''
 
     content_return_no_rtype = \
-    '''Foo is bar
+    '''"""Foo is bar
        :returns a number between 1 and 10
            I love Lucy
        :param foo: Blue is green
        :type foo: int
-       '''
+       """'''
 
     
     #-------------------------
@@ -126,9 +124,9 @@ class TestPdocPostProd(unittest.TestCase):
             PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
             
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n' +\
+            expected = '"""Foo is bar\n' +\
                        '       <b>tableName</b> (<b></i>String</i></b>): name of new table</br>' +\
-                       '       Blue is green\n'
+                       '       Blue is green\n       """'
             self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
@@ -144,9 +142,9 @@ class TestPdocPostProd(unittest.TestCase):
             PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
              
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n' +\
-                       '       <b>tableName</b> (<b></i>String</i></b>): name of new table            that I created just for you.       \n</br>' +\
-                       '       Blue is green\n'            
+            expected = '"""Foo is bar\n' +\
+                       '       <b>tableName</b> (<b></i>String</i></b>): name of new table that I created just for you.</br>' +\
+                       '       Blue is green\n       """'            
             self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()
@@ -166,7 +164,7 @@ class TestPdocPostProd(unittest.TestCase):
                          delimiter_char=delimiter_char,
                          force_type_spec=False)
             res = self.capture_stream.getvalue()
-            expected = 'Foo is bar\n       <b>tableName</b> name of new table        Blue is green</br>'
+            expected = '"""Foo is bar\n       <b>tableName</b> name of new table Blue is green """</br>'
             self.assertEqual(res, expected)
             # Clean out the capture stream:
             self.capture_stream = StringIO()            
@@ -227,9 +225,9 @@ class TestPdocPostProd(unittest.TestCase):
                 PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
-                expected = 'Foo is bar\n' +\
+                expected = '"""Foo is bar\n' +\
                            '       <b>returns:</b> a number between 1 and 10' +\
-                           ' Blue is green </br>'
+                           ' Blue is green """</br>'
                 self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
@@ -250,9 +248,9 @@ class TestPdocPostProd(unittest.TestCase):
                 PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
-                expected = 'Foo is bar\n' +\
+                expected = '"""Foo is bar\n' +\
                            '       <b>return type:</b> {int | str}</br>' +\
-                           '       Blue is green\n'
+                           '       Blue is green\n       """'
                 self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
@@ -274,9 +272,9 @@ class TestPdocPostProd(unittest.TestCase):
                 PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
-                expected = 'Foo is bar\n' +\
+                expected = '"""Foo is bar\n' +\
                            '       <b>raises:</b> ValueError</br>' +\
-                           '       Blue is green\n'
+                           '       Blue is green\n       """'
                 self.assertEqual(res, expected)
                 # Make a new capture stream so the old
                 # content won't confuse us on the next loop:
@@ -298,7 +296,7 @@ class TestPdocPostProd(unittest.TestCase):
             expected = '"""Foo is bar\n' +\
                        '       <b>returns:</b> a number between 1 and 10 I love Lucy</br>' +\
                        '       <b>return type:</b> int</br>' +\
-                       '       Blue is green\n       """\n       '
+                       '       Blue is green\n       """'
             self.assertEqual(res, expected)
             # Make a new capture stream so the old
             # content won't confuse us on the next loop:
@@ -326,7 +324,7 @@ class TestPdocPostProd(unittest.TestCase):
     # testDocStrDetection 
     #--------------
     
-    #*******@skipIf(not RUN_ALL, 'Temporarily disabled')
+    @skipIf(not RUN_ALL, 'Temporarily disabled')
     def testDocStrDetection(self):
         line1 = "'''"
         line2 = 'Multiline docstring\n'
