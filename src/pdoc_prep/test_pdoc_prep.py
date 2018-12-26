@@ -7,8 +7,8 @@ from io import StringIO
 import unittest
 from unittest import skipIf
 
-from .pdoc_post_prod import PdocPostProd , ParseInfo
-from .pdoc_post_prod import NoParamError, NoTypeError, ParamTypeMismatch
+from .pdoc_prep import PdocPrep , ParseInfo
+from .pdoc_prep import NoParamError, NoTypeError, ParamTypeMismatch
 
 RUN_ALL = True
 #RUN_ALL = False
@@ -121,7 +121,7 @@ class TestPdocPostProd(unittest.TestCase):
         for delimiter_char in [':', '@']:
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_good, delimiter_char)
             in_stream      = StringIO(adjusted_content)
-            PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+            PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
             
             res = self.capture_stream.getvalue()
             expected = '"""Foo is bar\n' +\
@@ -139,7 +139,7 @@ class TestPdocPostProd(unittest.TestCase):
         for delimiter_char in [':', '@']:
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_long_parm_line, delimiter_char)
             in_stream      = StringIO(adjusted_content)
-            PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+            PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
              
             res = self.capture_stream.getvalue()
             expected = '"""Foo is bar\n' +\
@@ -159,7 +159,7 @@ class TestPdocPostProd(unittest.TestCase):
         for delimiter_char in [':', '@']:
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_no_type, delimiter_char)
             in_stream = StringIO(adjusted_content)
-            PdocPostProd(in_stream,
+            PdocPrep(in_stream,
                          self.capture_stream, 
                          delimiter_char=delimiter_char,
                          force_type_spec=False)
@@ -179,7 +179,7 @@ class TestPdocPostProd(unittest.TestCase):
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_no_type, delimiter_char)
             in_stream = StringIO(adjusted_content)
             with self.assertRaises(NoTypeError):
-                PdocPostProd(in_stream,
+                PdocPrep(in_stream,
                              self.capture_stream, 
                              delimiter_char=delimiter_char,
                              force_type_spec=True)
@@ -194,7 +194,7 @@ class TestPdocPostProd(unittest.TestCase):
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_no_param, delimiter_char)
             in_stream = StringIO(adjusted_content)
             with self.assertRaises(NoParamError):
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
         
     #-------------------------
     # testParamTypeMismatch 
@@ -206,7 +206,7 @@ class TestPdocPostProd(unittest.TestCase):
             adjusted_content = self.set_delimiter_char(TestPdocPostProd.content_param_type_mismatch, delimiter_char)
             in_stream = StringIO(adjusted_content)
             with self.assertRaises(ParamTypeMismatch):
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
         
     #-------------------------
     # testReturnSpec 
@@ -222,7 +222,7 @@ class TestPdocPostProd(unittest.TestCase):
                            ]:
                 adjusted_content = self.set_delimiter_char(_input, delimiter_char)
                 in_stream        = StringIO(adjusted_content)
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
                 expected = '"""Foo is bar\n' +\
@@ -245,7 +245,7 @@ class TestPdocPostProd(unittest.TestCase):
                            ]:
                 adjusted_content = self.set_delimiter_char(_input, delimiter_char)
                 in_stream      = StringIO(adjusted_content)
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
                 expected = '"""Foo is bar\n' +\
@@ -269,7 +269,7 @@ class TestPdocPostProd(unittest.TestCase):
                            ]:
                 adjusted_content = self.set_delimiter_char(_input, delimiter_char)
                 in_stream      = StringIO(adjusted_content)
-                PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+                PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
                 
                 res = self.capture_stream.getvalue()
                 expected = '"""Foo is bar\n' +\
@@ -290,7 +290,7 @@ class TestPdocPostProd(unittest.TestCase):
             _input = TestPdocPostProd.content_return_multiline
             adjusted_content = self.set_delimiter_char(_input, delimiter_char)
             in_stream      = StringIO(adjusted_content)
-            PdocPostProd(in_stream, self.capture_stream, delimiter_char=delimiter_char)
+            PdocPrep(in_stream, self.capture_stream, delimiter_char=delimiter_char)
             
             res = self.capture_stream.getvalue()
             expected = '"""Foo is bar\n' +\
@@ -313,7 +313,7 @@ class TestPdocPostProd(unittest.TestCase):
             in_stream = StringIO(adjusted_content)
 
             with self.assertRaises(NoTypeError):
-                PdocPostProd(in_stream, 
+                PdocPrep(in_stream, 
                              self.capture_stream, 
                              delimiter_char=delimiter_char,
                              force_type_spec=True)
@@ -324,7 +324,7 @@ class TestPdocPostProd(unittest.TestCase):
     # testDocStrDetection 
     #--------------
     
-    @skipIf(not RUN_ALL, 'Temporarily disabled')
+    #*****@skipIf(not RUN_ALL, 'Temporarily disabled')
     def testDocStrDetection(self):
         line1 = "'''"
         line2 = 'Multiline docstring\n'
@@ -374,6 +374,25 @@ class TestPdocPostProd(unittest.TestCase):
         parse_info = ParseInfo('@')
         self.assertFalse(parse_info.in_docstr(line1))
         
+        # Close docstring with delimiterat end of a line:
+        line1 = '"""'
+        line2 = 'Multiline docstring\n'
+        line3 = 'with closing at end of a line"""\n'
+        line4 = "'''"
+        line5 = 'Other stuff.'
+        line6 = "'''"
+        
+        parse_info = ParseInfo('@')
+        self.assertTrue(parse_info.in_docstr(line1))
+        self.assertTrue(parse_info.in_docstr(line2))
+        self.assertFalse(parse_info.in_docstr(line3))
+        self.assertTrue(parse_info.in_docstr(line4))
+        self.assertTrue(parse_info.in_docstr(line5))
+        self.assertFalse(parse_info.in_docstr(line6))
+        
+        line1 = "    '''     '''    \n"
+        parse_info = ParseInfo('@')
+        self.assertFalse(parse_info.in_docstr(line1))
         
     #-------------------------
     # set_delimiter_char 
@@ -386,7 +405,7 @@ class TestPdocPostProd(unittest.TestCase):
         content string that uses the given delimiter
         char in all the lines that contain directives.
         
-        @param content: content to be passed into PdocPostProd
+        @param content: content to be passed into PdocPrep
             instance for testing.
         @type content: str
         @param delimiter_char: the delimiter char to use in the

@@ -2,25 +2,38 @@
 '''
 Created on Dec 18, 2018
 
-Prepares Python files with 
+Prepares Python files with sphinx-like parameter and return 
+specifications for input to the pdoc documentation tool
+(https://pypi.org/project/pdoc/). 
 
-Pre production upgrade of HTML output from the pdoc
-Python documentation tool (https://pypi.org/project/pdoc/).
+Motivation:
 
-The pdoc HTML output does not consider function/method
-parameter and return specifications in doc stringts as special.
-This tool can be used as a filter that modifies the HTML produced
-by pdoc to provide that special treatment.
+The pdoc HTML output does not recognize function/method
+parameter and return specifications in doc strings as special.
+So,
+     :param foo: controls whether bar is set to None
+     :type foo: int
+     :return True for success, else False
+     :rtype bool
+     
+will show up literally. If a module is instead piped through
+this tool, the subsequent pdoc run will generate appropriate 
+ HTML.
+      
  
-    Usage: cat myPdocHtmlOut.html | pdoc_post_prod.py > new myPdocHtmlOut.html
+    Usage: cat myModule.py | pdoc_prep.py > new myModuleTmp.py
+           pdoc --html myModuleTmp.py
     
 Note: it would be more sensible to include this functionality in
-the pdoc HTML production code itself. 
+the pdoc HTML production code itself. Alas, not enough time. 
      
 @author: Andreas Paepcke
 '''
+import argparse
+import os
 import re
 import sys
+
 
 # ---------------------------------- Special Exception and Enums -----------------
 class NoTypeError(Exception):
@@ -96,9 +109,13 @@ class ParseInfo(object):
             # Accepts 'raise', 'raises', and 'raised'                          
             self.raises_pat   = re.compile(r'(^[ ]+)@raise[s|d]{0,1}[:| ]{0,1}(.*)$')
 
-        self.triple_single_quote_pat = re.compile(r"[']{3}")
-        self.triple_double_quote_pat = re.compile(r'["]{3}')
+        self.single_quote_one_liner     = re.compile(r"^[\s]*[']{3}[^']+[']{3}$")
 
+        self.single_quote_doc_open_pat  = re.compile(r"^[\s]*[']{3}")
+        self.single_quote_doc_close_pat = re.compile(r"[']{3}[\s]*$")
+
+        self.double_quote_doc_open_pat  = re.compile(r'^[\s]*["]{3}')
+        self.double_quote_doc_close_pat = re.compile(r'["]{3}[\s]*$')
 
     #-------------------------
     # in_docstr 
@@ -110,69 +127,86 @@ class ParseInfo(object):
         docstr, else False. Handles delimiters triple single-quotes
         and triple double-quotes. 
         
+        Requires nothing but white space before and after the
+        docstring delimiter. 
+        
         Maintains self.curr_in_docstr for needed context
         
         @param line: one line of text
         @type line: str
         '''
+
+        single_open_m  = self.single_quote_doc_open_pat.search(line) 
+        single_close_m = self.single_quote_doc_close_pat.search(line)
+
+        double_open_m  =  self.double_quote_doc_open_pat.search(line) 
+        double_close_m = self.double_quote_doc_close_pat.search(line)
         
-        
-        single_quote_match = self.triple_single_quote_pat.search(line)
-        double_quote_match = self.triple_double_quote_pat.search(line)
-        
-        # Check trivial, and most frequent case:
-        if single_quote_match is None and double_quote_match is None and not self.curr_in_docstr:
+        # If found both, open and close delimiter, it's either
+        # one delimiter on an otherwise empty line, or two delimiter
+        # with text in between, i.e. a one-line docstr. Regex matches 
+        # for close and open contain the span of the respective matches.
+        #
+        # E.g.: for a single delim in a line, starting at char 8, the open
+        # and close spans are (0,11) and (8,12): the opening delimiter ends 
+        # after the delim, at 11. The match for the same delim starts before 
+        # the delimiter, at 8. There is only one delim iff the start of the closing 
+        # match is off from the end of the opening match by the length of the 
+        # delimiter (i.e. 3):
+         
+        if single_open_m and single_close_m and (single_close_m.span()[0] + 3 != single_open_m.span()[1]) or\
+           double_open_m and double_close_m and (double_close_m.span()[0] + 3 != double_open_m.span()[1]):
+            # One-liner:
             return False
         
-        # For convenience:
-        in_docstr = self.curr_in_docstr
-                
-        # Existing single quote docstr?
-        if in_docstr == "'''" and single_quote_match is None:
-            return True
+        # May have both, open and close delimiter matches, but they
+        # are the same delimiter on an empty line:        
+        if self.curr_in_docstr == "'''" and single_open_m and single_close_m:
+            single_open_m = None
+        elif self.curr_in_docstr == '"""' and double_open_m and double_close_m:
+            double_open_m = None
+        elif not self.curr_in_docstr and single_open_m and single_close_m:
+            # Single-line docstring: opens and closes in one line:
+            single_close_m = False
+        elif not self.curr_in_docstr and double_open_m and double_close_m:
+            # Single-line docstring: opens and closes in one line:
+            double_close_m = False
         
-        # Closing an open single quote docstr?
-        if in_docstr == "'''" and single_quote_match is not None:
-            self.curr_in_docstr = False
+        
+        # Check for single line docstr, which we just pass through:
+        if (single_open_m and single_close_m) or (double_open_m and double_close_m):
             return False
         
-        # Existing double quote docstr?
-        if in_docstr == '"""' and double_quote_match is None:
-            return True
+        # We are newly opening a docstr if we are not already in a docstr,
+        # and we are opening one now with either ''' or """:
         
-        # Closing an open double quote docstr?
-        if in_docstr == '"""' and double_quote_match is not None:
-            self.curr_in_docstr = False
-            return False
-
-        # We know that no docstring already open before call.
+        opening_docstr = None
+        if not self.curr_in_docstr:
+            if single_open_m:
+                opening_docstr = "'''"
+            elif double_open_m:
+                opening_docstr = '"""'
         
-        # Check for one-line docstr:
-        if single_quote_match is not None:
-            # Is there a closing triple single quote?
-            if self.triple_single_quote_pat.search(line[single_quote_match.end():]) is not None:
-                # There was a second triple single quote:
-                return False
-            
-        # Same for double quotes:
-        if double_quote_match is not None:
-            # Is there a closing triple double quote?
-            if self.triple_double_quote_pat.search(line[double_quote_match.end():]) is not None:
-                # There was a second triple double quote:
-                return False
+        # If currently in a docstr, then closing means that we 
+        # found a closing ''' or """ that matches the delimiter used
+        # to open the docstr:
+        closing_docstr = None
+        if self.curr_in_docstr:
+            if single_close_m and self.curr_in_docstr == "'''":
+                closing_docstr = "'''"
+            elif double_close_m:
+                closing_docstr = '"""'
+                            
+        if self.curr_in_docstr and closing_docstr:
+            self.curr_in_docstr = None
+        elif not self.curr_in_docstr and opening_docstr:
+            self.curr_in_docstr = opening_docstr
         
-        # Must be start of a new docstring:         
-        if not in_docstr and single_quote_match is not None:
-            self.curr_in_docstr = "'''"
-            return True
-        if not in_docstr and double_quote_match is not None:
-            self.curr_in_docstr = '"""'
-            return True
+        return self.curr_in_docstr
 
+# ---------------------------------- Class PdocPrep -----------------
 
-# ---------------------------------- Class PdocPostProd -----------------
-
-class PdocPostProd(object):
+class PdocPrep(object):
     '''
     Reads a pdoc-produced HTML file. Finds the 
     :param, :type, :return, :rtype, and :raises
@@ -218,6 +252,7 @@ class PdocPostProd(object):
         self.raise_errors = raise_errors
         self.warnings = warnings_on
         self.force_type_spec = force_type_spec
+        self.delimiter_char = delimiter_char
         self.parseInfo = ParseInfo(delimiter_char)
         self.parse(in_fd)
 
@@ -264,7 +299,8 @@ class PdocPostProd(object):
                 
                 # Empty lines within a docstr get a terminating </br>:
                 if self.is_blank_line(line):
-                    self.out_fd.write(self.parseInfo.line_sep)
+                    # Keep indentation (spaces/tabs), but replace NL with </br>
+                    self.out_fd.write(line[0:len(line)-1] + self.parseInfo.line_sep)
                     continue
                 
                 if self.check_param_spec(line, line_num) == HandleRes.HANDLED:
@@ -474,7 +510,8 @@ class PdocPostProd(object):
         # We don't check for already completed prior return specs. We should.
         
         if self.curr_return_desc is not None:
-            msg = "Only one 'return' specification allowed per docstring (line %s)" % line_num
+            msg = "Missing '%srtype' in previous '%sreturn' spec, or two '%sreturn' specs in same docstr (line %s)" % \
+                        (self.delimiter_char, self.delimiter_char, self.delimiter_char, line_num)
             self.error_notify(msg, DoubleReturnError)
             self.finish_return_spec()
             self.curr_return_desc = None
@@ -715,12 +752,56 @@ class PdocPostProd(object):
 if __name__ == '__main__':
 
     # Create preprocessed file from this file:
-    import os
-    with open(os.path.join(os.path.dirname(__file__), 'pdoc_post_prod.py'), 'r') as fd:
-        PdocPostProd(fd)
-    #***********
+#     with open(os.path.join(os.path.dirname(__file__), 'pdoc_prep.py'), 'r') as fd:
+#         PdocPrep(fd)
+#     sys.exit()
+
+#     with open(os.path.join(os.path.dirname(__file__), 
+#                            '/Users/paepcke/EclipseWorkspacesNew/pymysql_utils/pymysql_utils/pymysql_utils.py'), 'r') as fd:
+#         PdocPrep(fd, delimiter_char=':')
+#     sys.exit()
+        
+    parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]),
+                                     formatter_class=argparse.RawTextHelpFormatter,
+                                     description="Preprocess Python module for use with pdoc tool."
+                                     )
+
+    parser.add_argument('-f', '--file',
+                        help='fully qualified path to Python module. Default: stdin',
+                        default=None)
+    parser.add_argument('-o', '--outfile',
+                        help='fully qualified path to output file. Default: stdout',
+                        default=None)                        
+    parser.add_argument('-d', '--delimiter',
+                        help="One of '@' and ':', which precede the parameter/return/rtyp specs in your module. Default: '@'",
+                        default='@')
+    parser.add_argument('-t', '--typecheck',
+                        help="If present, require a 'type' spec for each parameter, and an 'rtype' for each return. Default: False",
+                        default=False)
+
+    args = parser.parse_args();
     
-    #****PdocPostProd()
+    try:
+        if args.file is None:
+            in_fd = sys.stdin
+        else:
+            in_fd = open(args.file, 'r')
+            
+        if args.outfile is None:
+            out_fd = sys.stdout
+        else:
+            out_fd = open(args.outfile, 'w')
+            
+        
+        PdocPrep(in_fd=in_fd, 
+                 out_fd=out_fd,
+                 delimiter_char=args.delimiter,
+                 force_type_spec=args.typecheck)
+    finally:
+        if in_fd != sys.stdin:
+            in_fd.close()
+        if out_fd != sys.stdout:
+            out_fd.close()
     
     
     
