@@ -5,8 +5,9 @@
 
     <title>pdoc_prep API documentation</title>
     <meta name="description" content="Created on Dec 18, 2018
-</br>Prepares Python files that use sphinx-like parameter and return 
-specif..." />
+
+Prepares Python files that use sphinx-like parameter and return 
+specificat..." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -1114,12 +1115,12 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">pdoc_prep</span> module</h1>
-  <p>Created on Dec 18, 2018
-</br>Prepares Python files that use sphinx-like parameter and return 
+  <p>Created on Dec 18, 2018</p>
+<p>Prepares Python files that use sphinx-like parameter and return 
 specifications for input to the pdoc documentation tool
-(https://pypi.org/project/pdoc/). 
-</br><strong>Motivation:</strong>
-</br>The pdoc HTML output does not recognize function/method
+(https://pypi.org/project/pdoc/). </p>
+<p><strong>Motivation:</strong></p>
+<p>The pdoc HTML output does not recognize function/method
 parameter and return specifications in doc strings as special.
 So,
 <pre>
@@ -1135,31 +1136,39 @@ documentation will look like this:
       foo (int): controls whether bar is set to None
       returns True for success, else False
       return type: bool
-</pre>   <br />
-</br><strong>Note:</strong> whether '<b>:</b>' is used to introduce a specification,
+</pre>     </p>
+<p><strong>Note:</strong> whether '<b>:</b>' is used to introduce a specification,
 or '<b>@</b>' is controlled from a command line option. See main
-section below.
-</br>This module can be used directly, either to process an input
+section below.</p>
+<p>This module can be used directly, either to process an input
 file, or as part of a pipe. In general it is much more
-conventient to use <em>pdoc_run.py</em>:
-</br>    <code>shell&gt; pdoc_run.py --html-dir docs src/pdoc_prep/pdoc_prep.py</code>
-<br>
+conventient to use <em>pdoc_run.py</em>:</p>
+<div class="codehilite"><pre><span></span>```
+shell&gt; pdoc_run.py --html-dir docs src/pdoc_prep/pdoc_prep.py
+```
+</pre></div>
+
+
+<p><br>
 Used directly:<br>
-    <code>shell&gt; cat myMod.py | pdoc_prep.py &gt; new myModTmp.py; pdoc --html myModTmp.py</code>
-    </br><strong>Note:</strong> it would be more sensible to include this functionality in
-the pdoc HTML production code itself. Alas, not enough time. 
-     </br>@author: Andreas Paepcke</p>
+    <code>shell&gt; cat myMod.py | pdoc_prep.py &gt; new myModTmp.py; pdoc --html myModTmp.py</code></p>
+<p><strong>Note:</strong> it would be more sensible to include this functionality in
+the pdoc HTML production code itself. Alas, not enough time. </p>
+<p>@author: Andreas Paepcke</p>
   
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep" class="source">
     <div class="codehilite"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Created on Dec 18, 2018</span>
-<span class="sd">&lt;/br&gt;Prepares Python files that use sphinx-like parameter and return </span>
+
+<span class="sd">Prepares Python files that use sphinx-like parameter and return </span>
 <span class="sd">specifications for input to the pdoc documentation tool</span>
 <span class="sd">(https://pypi.org/project/pdoc/). </span>
-<span class="sd">&lt;/br&gt;**Motivation:**</span>
-<span class="sd">&lt;/br&gt;The pdoc HTML output does not recognize function/method</span>
+
+<span class="sd">**Motivation:**</span>
+
+<span class="sd">The pdoc HTML output does not recognize function/method</span>
 <span class="sd">parameter and return specifications in doc strings as special.</span>
 <span class="sd">So,</span>
 <span class="sd">&lt;pre&gt;</span>
@@ -1176,13 +1185,16 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">      returns True for success, else False</span>
 <span class="sd">      return type: bool</span>
 <span class="sd">&lt;/pre&gt;     </span>
-<span class="sd">&lt;/br&gt;**Note:** whether &#39;&lt;b&gt;:&lt;/b&gt;&#39; is used to introduce a specification,</span>
+
+<span class="sd">**Note:** whether &#39;&lt;b&gt;:&lt;/b&gt;&#39; is used to introduce a specification,</span>
 <span class="sd">or &#39;&lt;b&gt;@&lt;/b&gt;&#39; is controlled from a command line option. See main</span>
 <span class="sd">section below.</span>
-<span class="sd">&lt;/br&gt;This module can be used directly, either to process an input</span>
+
+<span class="sd">This module can be used directly, either to process an input</span>
 <span class="sd">file, or as part of a pipe. In general it is much more</span>
 <span class="sd">conventient to use *pdoc_run.py*:</span>
-<span class="sd">&lt;/br&gt;    ```</span>
+
+<span class="sd">    ```</span>
 <span class="sd">    shell&gt; pdoc_run.py --html-dir docs src/pdoc_prep/pdoc_prep.py</span>
 <span class="sd">    ```</span>
 <span class="sd">&lt;br&gt;</span>
@@ -1190,9 +1202,11 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">    ```</span>
 <span class="sd">    shell&gt; cat myMod.py | pdoc_prep.py &gt; new myModTmp.py; pdoc --html myModTmp.py</span>
 <span class="sd">    ```</span>
-<span class="sd">    &lt;/br&gt;**Note:** it would be more sensible to include this functionality in</span>
+<span class="sd">    </span>
+<span class="sd">**Note:** it would be more sensible to include this functionality in</span>
 <span class="sd">the pdoc HTML production code itself. Alas, not enough time. </span>
-<span class="sd">     &lt;/br&gt;@author: Andreas Paepcke</span>
+<span class="sd">     </span>
+<span class="sd">@author: Andreas Paepcke</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -1233,7 +1247,10 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        a parameter/type/return, or raises directive. Legal</span>
 <span class="sd">        starting delimiters are &#39;:&#39; and &#39;@&#39;, as in &#39;:param...&#39;,</span>
 <span class="sd">        and &#39;@param...&#39;.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): char literal in [&#39;:&#39;, &#39;@&#39;]&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param delimiter_char: char literal in [&#39;:&#39;, &#39;@&#39;]</span>
+<span class="sd">        @type delimiter_char: char</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_in_docstr</span> <span class="o">=</span> <span class="bp">False</span>
         
@@ -1288,10 +1305,15 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        Given a string, return True if parsing is currently in a</span>
 <span class="sd">        docstr, else False. Handles delimiters triple single-quotes</span>
 <span class="sd">        and triple double-quotes. </span>
-<span class="sd">        &lt;/br&gt;        Requires nothing but white space before and after the</span>
+<span class="sd">        </span>
+<span class="sd">        Requires nothing but white space before and after the</span>
 <span class="sd">        docstring delimiter. </span>
-<span class="sd">        &lt;/br&gt;        Maintains self.curr_in_docstr for needed context</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): one line of text&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Maintains self.curr_in_docstr for needed context</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: one line of text</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">single_open_m</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_open_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
         <span class="n">single_close_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_close_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -1368,11 +1390,14 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">    Reads a pdoc-produced HTML file. Finds the </span>
 <span class="sd">    :param, :type, :return, :rtype, and :raises</span>
 <span class="sd">    lines. Replaces them with HTML.</span>
-<span class="sd">    &lt;/br&gt;    :param foo: this tells about fum</span>
+<span class="sd">    </span>
+<span class="sd">    :param foo: this tells about fum</span>
 <span class="sd">    :type foo: int</span>
-<span class="sd">    &lt;/br&gt;    Is turned into: </span>
+<span class="sd">    </span>
+<span class="sd">    Is turned into: </span>
 <span class="sd">        &lt;b&gt;foo&lt;/b&gt;(&lt;i&gt;int&lt;/i&gt;): this tells about fum&lt;br&gt;</span>
-<span class="sd">        &lt;/br&gt;    Similarly for :return/:rtype, and :raises</span>
+<span class="sd">        </span>
+<span class="sd">    Similarly for :return/:rtype, and :raises</span>
 <span class="sd">    &#39;&#39;&#39;</span>
         
     <span class="c1">#-------------------------</span>
@@ -1388,7 +1413,19 @@ the pdoc HTML production code itself. Alas, not enough time.
                  <span class="n">force_type_spec</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): source of pdoc-produced HTML file. Default: stdin&lt;/br&gt;        &lt;b&gt;out_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): destination of transformed html. Default: stdout&lt;/br&gt;        &lt;b&gt;raise_errors&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities will raise errors. Default: True&lt;/br&gt;        &lt;b&gt;warnings_on&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities generate warnings to stderr. Ignored if raise_errors is True&lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param in_fd: source of pdoc-produced HTML file. Default: stdin</span>
+<span class="sd">        @type in_fd: file-like</span>
+<span class="sd">        @param out_fd: destination of transformed html. Default: stdout</span>
+<span class="sd">        @type out_fd: file-like</span>
+<span class="sd">        @param raise_errors: if True then irregularities will raise errors. Default: True</span>
+<span class="sd">        @type raise_errors: boolean</span>
+<span class="sd">        @param warnings_on: if True then irregularities generate warnings to stderr.</span>
+<span class="sd">            Ignored if raise_errors is True</span>
+<span class="sd">        @type warnings_on: boolean</span>
+<span class="sd">        @param delimiter_char: starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;</span>
+<span class="sd">        @type delimiter_char: char</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">out_fd</span> <span class="o">=</span> <span class="n">out_fd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span> <span class="o">=</span> <span class="n">raise_errors</span>
@@ -1406,7 +1443,11 @@ the pdoc HTML production code itself. Alas, not enough time.
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Goes through each HTML line looking for relevatn</span>
 <span class="sd">        doc string snippets to transform </span>
-<span class="sd">        &lt;/br&gt;        &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): input stream&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        @param in_fd: input stream</span>
+<span class="sd">        @type in_fd: file-like</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1481,7 +1522,12 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        Both, parameter and return specifications can </span>
 <span class="sd">        run across multiple lines. Those lines need</span>
 <span class="sd">        to be collected and placed into one string.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): current line to parse&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; True if a multiline was detected, else False&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; bool&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: current line to parse</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @returns True if a multiline was detected, else False</span>
+<span class="sd">        @rtype bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># In the middle of a multiline parm spec?</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
@@ -1504,7 +1550,15 @@ the pdoc HTML production code itself. Alas, not enough time.
     <span class="k">def</span> <span class="nf">check_param_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :param and @param.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">parm_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">param_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1541,7 +1595,16 @@ the pdoc HTML production code itself. Alas, not enough time.
     <span class="k">def</span> <span class="nf">check_type_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :type and @type.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError, NoParamError, ParamTypeMismatch&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        @raises NoTypeError, NoParamError, ParamTypeMismatch</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">type_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">type_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         
@@ -1597,7 +1660,15 @@ the pdoc HTML production code itself. Alas, not enough time.
     <span class="k">def</span> <span class="nf">check_return_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :return and @return.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">return_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">return_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">return_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">HandleRes</span><span class="o">.</span><span class="n">NOT_HANDLED</span>
@@ -1635,7 +1706,15 @@ the pdoc HTML production code itself. Alas, not enough time.
     <span class="k">def</span> <span class="nf">check_rtype_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :rtype and @rtype.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">rtype_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">rtype_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rtype_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1664,7 +1743,15 @@ the pdoc HTML production code itself. Alas, not enough time.
     <span class="k">def</span> <span class="nf">check_raises_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :raises and @raises.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">raises_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">raises_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raises_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1695,9 +1782,17 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        no parameter spec is being constructed, do nothing. If</span>
 <span class="sd">        type_found is False, and client has indicated force_type_spec</span>
 <span class="sd">        when instantiating this object, an error is raised.</span>
-<span class="sd">        &lt;/br&gt;        Parameters specs are closed adding a line separator if</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters specs are closed adding a line separator if</span>
 <span class="sd">        non is already part of the param_desc part of curr_parm_match.  </span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;type_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param type_found: whether a type specification was found</span>
+<span class="sd">        @type type_found: bool</span>
+<span class="sd">        @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">            in error messages.</span>
+<span class="sd">        @type line_no: int</span>
+<span class="sd">        @raised NoTypeError</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -1725,8 +1820,12 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        parameter spec, append line to the parameter description.</span>
 <span class="sd">        We assume that self.curr_parm_match is a tuple:</span>
 <span class="sd">        (parm_name, parm_desc).</span>
-<span class="sd">        &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Surrounding white space in line is removed.</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: text to add</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
@@ -1739,8 +1838,12 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        Assuming that we are currently processing a</span>
 <span class="sd">        return spec, append line to the return description.</span>
 <span class="sd">        We assume that self.curr_return_desc is a string!</span>
-<span class="sd">        &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Surrounding white space in line is removed.</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: text to add</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
      
 
@@ -1752,9 +1855,16 @@ the pdoc HTML production code itself. Alas, not enough time.
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        If a return spec is being constructed, finish it. If</span>
 <span class="sd">        no return spec is being constructed, do nothing.</span>
-<span class="sd">        &lt;/br&gt;        Return specs are closed adding a line separator if</span>
+<span class="sd">        </span>
+<span class="sd">        Return specs are closed adding a line separator if</span>
 <span class="sd">        non is already part of the return_desc part of curr_return_desc.  </span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;rtype_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param rtype_found: whether a type specification was found</span>
+<span class="sd">        @type rtype_found: bool        </span>
+<span class="sd">        @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">            in error messages.</span>
+<span class="sd">        @type line_no: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -1797,7 +1907,13 @@ the pdoc HTML production code itself. Alas, not enough time.
 <span class="sd">        Handles either raising error, printing</span>
 <span class="sd">        warning to stderr, or staying silent. All</span>
 <span class="sd">        controlled by parameters to constructor.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;msg&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): msg to use for error msg or warning&lt;/br&gt;        &lt;b&gt;error_inst&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;Exception&lt;/i&gt;&lt;/b&gt;): instance of error to raise. Only needed if raise_errors is True in the constructor call.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param msg: msg to use for error msg or warning</span>
+<span class="sd">        @type msg: str</span>
+<span class="sd">        @param error_inst: instance of error to raise. Only needed</span>
+<span class="sd">            if raise_errors is True in the constructor call.</span>
+<span class="sd">        @type error_inst: Exception</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">error_inst</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
@@ -2106,7 +2222,10 @@ in the pdoc HTML output.</p></div>
 <span class="sd">        a parameter/type/return, or raises directive. Legal</span>
 <span class="sd">        starting delimiters are &#39;:&#39; and &#39;@&#39;, as in &#39;:param...&#39;,</span>
 <span class="sd">        and &#39;@param...&#39;.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): char literal in [&#39;:&#39;, &#39;@&#39;]&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param delimiter_char: char literal in [&#39;:&#39;, &#39;@&#39;]</span>
+<span class="sd">        @type delimiter_char: char</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_in_docstr</span> <span class="o">=</span> <span class="bp">False</span>
         
@@ -2161,10 +2280,15 @@ in the pdoc HTML output.</p></div>
 <span class="sd">        Given a string, return True if parsing is currently in a</span>
 <span class="sd">        docstr, else False. Handles delimiters triple single-quotes</span>
 <span class="sd">        and triple double-quotes. </span>
-<span class="sd">        &lt;/br&gt;        Requires nothing but white space before and after the</span>
+<span class="sd">        </span>
+<span class="sd">        Requires nothing but white space before and after the</span>
 <span class="sd">        docstring delimiter. </span>
-<span class="sd">        &lt;/br&gt;        Maintains self.curr_in_docstr for needed context</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): one line of text&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Maintains self.curr_in_docstr for needed context</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: one line of text</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">single_open_m</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_open_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
         <span class="n">single_close_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_close_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -2259,8 +2383,9 @@ in the pdoc HTML output.</p></div>
 depending on whether the delimiter for starting
 a parameter/type/return, or raises directive. Legal
 starting delimiters are ':' and '@', as in ':param...',
-and '@param...'.
-</br>        <b>delimiter_char</b> (<b></i>char</i></b>): char literal in [':', '@']</br></p></div>
+and '@param...'.</p>
+<p>@param delimiter_char: char literal in [':', '@']
+@type delimiter_char: char</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.ParseInfo.__init__', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.ParseInfo.__init__" class="source">
@@ -2271,7 +2396,10 @@ and '@param...'.
 <span class="sd">    a parameter/type/return, or raises directive. Legal</span>
 <span class="sd">    starting delimiters are &#39;:&#39; and &#39;@&#39;, as in &#39;:param...&#39;,</span>
 <span class="sd">    and &#39;@param...&#39;.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): char literal in [&#39;:&#39;, &#39;@&#39;]&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param delimiter_char: char literal in [&#39;:&#39;, &#39;@&#39;]</span>
+<span class="sd">    @type delimiter_char: char</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">curr_in_docstr</span> <span class="o">=</span> <span class="bp">False</span>
     
     <span class="k">if</span> <span class="n">delimiter_char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">]:</span>
@@ -2329,11 +2457,12 @@ and '@param...'.
   
     <div class="desc"><p>Given a string, return True if parsing is currently in a
 docstr, else False. Handles delimiters triple single-quotes
-and triple double-quotes. 
-</br>        Requires nothing but white space before and after the
-docstring delimiter. 
-</br>        Maintains self.curr_in_docstr for needed context
-</br>        <b>line</b> (<b></i>str</i></b>): one line of text</br></p></div>
+and triple double-quotes. </p>
+<p>Requires nothing but white space before and after the
+docstring delimiter. </p>
+<p>Maintains self.curr_in_docstr for needed context</p>
+<p>@param line: one line of text
+@type line: str</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.ParseInfo.in_docstr', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.ParseInfo.in_docstr" class="source">
@@ -2342,10 +2471,15 @@ docstring delimiter.
 <span class="sd">    Given a string, return True if parsing is currently in a</span>
 <span class="sd">    docstr, else False. Handles delimiters triple single-quotes</span>
 <span class="sd">    and triple double-quotes. </span>
-<span class="sd">    &lt;/br&gt;        Requires nothing but white space before and after the</span>
+<span class="sd">    </span>
+<span class="sd">    Requires nothing but white space before and after the</span>
 <span class="sd">    docstring delimiter. </span>
-<span class="sd">    &lt;/br&gt;        Maintains self.curr_in_docstr for needed context</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): one line of text&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Maintains self.curr_in_docstr for needed context</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: one line of text</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">single_open_m</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_open_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
     <span class="n">single_close_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_quote_doc_close_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="n">double_open_m</span>  <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">double_quote_doc_open_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> 
@@ -2509,12 +2643,12 @@ docstring delimiter.
   
     <div class="desc"><p>Reads a pdoc-produced HTML file. Finds the 
 :param, :type, :return, :rtype, and :raises
-lines. Replaces them with HTML.
-</br>    :param foo: this tells about fum
-:type foo: int
-</br>    Is turned into: 
-    <b>foo</b>(<i>int</i>): this tells about fum<br>
-    </br>    Similarly for :return/:rtype, and :raises</p></div>
+lines. Replaces them with HTML.</p>
+<p>:param foo: this tells about fum
+:type foo: int</p>
+<p>Is turned into: 
+    <b>foo</b>(<i>int</i>): this tells about fum<br></p>
+<p>Similarly for :return/:rtype, and :raises</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep" class="source">
@@ -2523,11 +2657,14 @@ lines. Replaces them with HTML.
 <span class="sd">    Reads a pdoc-produced HTML file. Finds the </span>
 <span class="sd">    :param, :type, :return, :rtype, and :raises</span>
 <span class="sd">    lines. Replaces them with HTML.</span>
-<span class="sd">    &lt;/br&gt;    :param foo: this tells about fum</span>
+<span class="sd">    </span>
+<span class="sd">    :param foo: this tells about fum</span>
 <span class="sd">    :type foo: int</span>
-<span class="sd">    &lt;/br&gt;    Is turned into: </span>
+<span class="sd">    </span>
+<span class="sd">    Is turned into: </span>
 <span class="sd">        &lt;b&gt;foo&lt;/b&gt;(&lt;i&gt;int&lt;/i&gt;): this tells about fum&lt;br&gt;</span>
-<span class="sd">        &lt;/br&gt;    Similarly for :return/:rtype, and :raises</span>
+<span class="sd">        </span>
+<span class="sd">    Similarly for :return/:rtype, and :raises</span>
 <span class="sd">    &#39;&#39;&#39;</span>
         
     <span class="c1">#-------------------------</span>
@@ -2543,7 +2680,19 @@ lines. Replaces them with HTML.
                  <span class="n">force_type_spec</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Constructor</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): source of pdoc-produced HTML file. Default: stdin&lt;/br&gt;        &lt;b&gt;out_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): destination of transformed html. Default: stdout&lt;/br&gt;        &lt;b&gt;raise_errors&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities will raise errors. Default: True&lt;/br&gt;        &lt;b&gt;warnings_on&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities generate warnings to stderr. Ignored if raise_errors is True&lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param in_fd: source of pdoc-produced HTML file. Default: stdin</span>
+<span class="sd">        @type in_fd: file-like</span>
+<span class="sd">        @param out_fd: destination of transformed html. Default: stdout</span>
+<span class="sd">        @type out_fd: file-like</span>
+<span class="sd">        @param raise_errors: if True then irregularities will raise errors. Default: True</span>
+<span class="sd">        @type raise_errors: boolean</span>
+<span class="sd">        @param warnings_on: if True then irregularities generate warnings to stderr.</span>
+<span class="sd">            Ignored if raise_errors is True</span>
+<span class="sd">        @type warnings_on: boolean</span>
+<span class="sd">        @param delimiter_char: starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;</span>
+<span class="sd">        @type delimiter_char: char</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">out_fd</span> <span class="o">=</span> <span class="n">out_fd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span> <span class="o">=</span> <span class="n">raise_errors</span>
@@ -2561,7 +2710,11 @@ lines. Replaces them with HTML.
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Goes through each HTML line looking for relevatn</span>
 <span class="sd">        doc string snippets to transform </span>
-<span class="sd">        &lt;/br&gt;        &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): input stream&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        @param in_fd: input stream</span>
+<span class="sd">        @type in_fd: file-like</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">=</span> <span class="bp">None</span>
@@ -2636,7 +2789,12 @@ lines. Replaces them with HTML.
 <span class="sd">        Both, parameter and return specifications can </span>
 <span class="sd">        run across multiple lines. Those lines need</span>
 <span class="sd">        to be collected and placed into one string.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): current line to parse&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; True if a multiline was detected, else False&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; bool&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: current line to parse</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @returns True if a multiline was detected, else False</span>
+<span class="sd">        @rtype bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># In the middle of a multiline parm spec?</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
@@ -2659,7 +2817,15 @@ lines. Replaces them with HTML.
     <span class="k">def</span> <span class="nf">check_param_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :param and @param.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">parm_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">param_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -2696,7 +2862,16 @@ lines. Replaces them with HTML.
     <span class="k">def</span> <span class="nf">check_type_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :type and @type.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError, NoParamError, ParamTypeMismatch&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        @raises NoTypeError, NoParamError, ParamTypeMismatch</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">type_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">type_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         
@@ -2752,7 +2927,15 @@ lines. Replaces them with HTML.
     <span class="k">def</span> <span class="nf">check_return_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :return and @return.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">return_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">return_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">return_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">HandleRes</span><span class="o">.</span><span class="n">NOT_HANDLED</span>
@@ -2790,7 +2973,15 @@ lines. Replaces them with HTML.
     <span class="k">def</span> <span class="nf">check_rtype_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :rtype and @rtype.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">rtype_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">rtype_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rtype_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -2819,7 +3010,15 @@ lines. Replaces them with HTML.
     <span class="k">def</span> <span class="nf">check_raises_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Handle :raises and @raises.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: line to check for directive</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">        @type line_num: int</span>
+<span class="sd">        @returns whether the given line was handled and output,</span>
+<span class="sd">            or nothing was done.</span>
+<span class="sd">        @rtype HandleRes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">raises_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">raises_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raises_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -2850,9 +3049,17 @@ lines. Replaces them with HTML.
 <span class="sd">        no parameter spec is being constructed, do nothing. If</span>
 <span class="sd">        type_found is False, and client has indicated force_type_spec</span>
 <span class="sd">        when instantiating this object, an error is raised.</span>
-<span class="sd">        &lt;/br&gt;        Parameters specs are closed adding a line separator if</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters specs are closed adding a line separator if</span>
 <span class="sd">        non is already part of the param_desc part of curr_parm_match.  </span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;type_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param type_found: whether a type specification was found</span>
+<span class="sd">        @type type_found: bool</span>
+<span class="sd">        @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">            in error messages.</span>
+<span class="sd">        @type line_no: int</span>
+<span class="sd">        @raised NoTypeError</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -2880,8 +3087,12 @@ lines. Replaces them with HTML.
 <span class="sd">        parameter spec, append line to the parameter description.</span>
 <span class="sd">        We assume that self.curr_parm_match is a tuple:</span>
 <span class="sd">        (parm_name, parm_desc).</span>
-<span class="sd">        &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Surrounding white space in line is removed.</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: text to add</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
@@ -2894,8 +3105,12 @@ lines. Replaces them with HTML.
 <span class="sd">        Assuming that we are currently processing a</span>
 <span class="sd">        return spec, append line to the return description.</span>
 <span class="sd">        We assume that self.curr_return_desc is a string!</span>
-<span class="sd">        &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        Surrounding white space in line is removed.</span>
+<span class="sd">        </span>
+<span class="sd">        @param line: text to add</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
      
 
@@ -2907,9 +3122,16 @@ lines. Replaces them with HTML.
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        If a return spec is being constructed, finish it. If</span>
 <span class="sd">        no return spec is being constructed, do nothing.</span>
-<span class="sd">        &lt;/br&gt;        Return specs are closed adding a line separator if</span>
+<span class="sd">        </span>
+<span class="sd">        Return specs are closed adding a line separator if</span>
 <span class="sd">        non is already part of the return_desc part of curr_return_desc.  </span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;rtype_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param rtype_found: whether a type specification was found</span>
+<span class="sd">        @type rtype_found: bool        </span>
+<span class="sd">        @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">            in error messages.</span>
+<span class="sd">        @type line_no: int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -2952,7 +3174,13 @@ lines. Replaces them with HTML.
 <span class="sd">        Handles either raising error, printing</span>
 <span class="sd">        warning to stderr, or staying silent. All</span>
 <span class="sd">        controlled by parameters to constructor.</span>
-<span class="sd">        &lt;/br&gt;        &lt;b&gt;msg&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): msg to use for error msg or warning&lt;/br&gt;        &lt;b&gt;error_inst&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;Exception&lt;/i&gt;&lt;/b&gt;): instance of error to raise. Only needed if raise_errors is True in the constructor call.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        @param msg: msg to use for error msg or warning</span>
+<span class="sd">        @type msg: str</span>
+<span class="sd">        @param error_inst: instance of error to raise. Only needed</span>
+<span class="sd">            if raise_errors is True in the constructor call.</span>
+<span class="sd">        @type error_inst: Exception</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">error_inst</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
@@ -2982,8 +3210,18 @@ lines. Replaces them with HTML.
 
     
   
-    <div class="desc"><p>Constructor
-</br>        <b>in_fd</b> (<b></i>file-like</i></b>): source of pdoc-produced HTML file. Default: stdin</br>        <b>out_fd</b> (<b></i>file-like</i></b>): destination of transformed html. Default: stdout</br>        <b>raise_errors</b> (<b></i>boolean</i></b>): if True then irregularities will raise errors. Default: True</br>        <b>warnings_on</b> (<b></i>boolean</i></b>): if True then irregularities generate warnings to stderr. Ignored if raise_errors is True</br>        <b>delimiter_char</b> (<b></i>char</i></b>): starting char of a directive: ':' or '@'. Default: '@'</br></p></div>
+    <div class="desc"><p>Constructor</p>
+<p>@param in_fd: source of pdoc-produced HTML file. Default: stdin
+@type in_fd: file-like
+@param out_fd: destination of transformed html. Default: stdout
+@type out_fd: file-like
+@param raise_errors: if True then irregularities will raise errors. Default: True
+@type raise_errors: boolean
+@param warnings_on: if True then irregularities generate warnings to stderr.
+    Ignored if raise_errors is True
+@type warnings_on: boolean
+@param delimiter_char: starting char of a directive: ':' or '@'. Default: '@'
+@type delimiter_char: char</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.__init__', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.__init__" class="source">
@@ -2996,7 +3234,19 @@ lines. Replaces them with HTML.
              <span class="n">force_type_spec</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Constructor</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): source of pdoc-produced HTML file. Default: stdin&lt;/br&gt;        &lt;b&gt;out_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): destination of transformed html. Default: stdout&lt;/br&gt;        &lt;b&gt;raise_errors&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities will raise errors. Default: True&lt;/br&gt;        &lt;b&gt;warnings_on&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;boolean&lt;/i&gt;&lt;/b&gt;): if True then irregularities generate warnings to stderr. Ignored if raise_errors is True&lt;/br&gt;        &lt;b&gt;delimiter_char&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;char&lt;/i&gt;&lt;/b&gt;): starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param in_fd: source of pdoc-produced HTML file. Default: stdin</span>
+<span class="sd">    @type in_fd: file-like</span>
+<span class="sd">    @param out_fd: destination of transformed html. Default: stdout</span>
+<span class="sd">    @type out_fd: file-like</span>
+<span class="sd">    @param raise_errors: if True then irregularities will raise errors. Default: True</span>
+<span class="sd">    @type raise_errors: boolean</span>
+<span class="sd">    @param warnings_on: if True then irregularities generate warnings to stderr.</span>
+<span class="sd">        Ignored if raise_errors is True</span>
+<span class="sd">    @type warnings_on: boolean</span>
+<span class="sd">    @param delimiter_char: starting char of a directive: &#39;:&#39; or &#39;@&#39;. Default: &#39;@&#39;</span>
+<span class="sd">    @type delimiter_char: char</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="bp">self</span><span class="o">.</span><span class="n">out_fd</span> <span class="o">=</span> <span class="n">out_fd</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span> <span class="o">=</span> <span class="n">raise_errors</span>
@@ -3024,9 +3274,10 @@ lines. Replaces them with HTML.
     <div class="desc"><p>Assuming that we are currently processing a
 parameter spec, append line to the parameter description.
 We assume that self.curr_parm_match is a tuple:
-(parm_name, parm_desc).
-</br>        Surrounding white space in line is removed.
-</br>        <b>line</b> (<b></i>str</i></b>): text to add</br></p></div>
+(parm_name, parm_desc).</p>
+<p>Surrounding white space in line is removed.</p>
+<p>@param line: text to add
+@type line: str</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.append_to_parm_desc', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.append_to_parm_desc" class="source">
@@ -3036,8 +3287,12 @@ We assume that self.curr_parm_match is a tuple:
 <span class="sd">    parameter spec, append line to the parameter description.</span>
 <span class="sd">    We assume that self.curr_parm_match is a tuple:</span>
 <span class="sd">    (parm_name, parm_desc).</span>
-<span class="sd">    &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Surrounding white space in line is removed.</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: text to add</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="p">(</span><span class="n">_parm_name</span><span class="p">,</span> <span class="n">parm_desc</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 </pre></div>
@@ -3058,9 +3313,10 @@ We assume that self.curr_parm_match is a tuple:
   
     <div class="desc"><p>Assuming that we are currently processing a
 return spec, append line to the return description.
-We assume that self.curr_return_desc is a string!
-</br>        Surrounding white space in line is removed.
-</br>        <b>line</b> (<b></i>str</i></b>): text to add</br></p></div>
+We assume that self.curr_return_desc is a string!</p>
+<p>Surrounding white space in line is removed.</p>
+<p>@param line: text to add
+@type line: str</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.append_to_return_desc', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.append_to_return_desc" class="source">
@@ -3069,8 +3325,12 @@ We assume that self.curr_return_desc is a string!
 <span class="sd">    Assuming that we are currently processing a</span>
 <span class="sd">    return spec, append line to the return description.</span>
 <span class="sd">    We assume that self.curr_return_desc is a string!</span>
-<span class="sd">    &lt;/br&gt;        Surrounding white space in line is removed.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): text to add&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Surrounding white space in line is removed.</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: text to add</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 </pre></div>
 
@@ -3088,15 +3348,29 @@ We assume that self.curr_return_desc is a string!
 
     
   
-    <div class="desc"><p>Handle :param and @param.
-</br>        <b>line</b> (<b></i>str</i></b>): line to check for directive</br>        <b>line_num</b> (<b></i>int</i></b>): line number in original HTML file. Used for error msgs.</br>        <b>returns:</b> whether the given line was handled and output, or nothing was done.</br>        <b>return type:</b> HandleRes</br></p></div>
+    <div class="desc"><p>Handle :param and @param.</p>
+<p>@param line: line to check for directive
+@type line: str
+@param line_num: line number in original HTML file. Used for error msgs.
+@type line_num: int
+@returns whether the given line was handled and output,
+    or nothing was done.
+@rtype HandleRes</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.check_param_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.check_param_spec" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_param_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Handle :param and @param.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: line to check for directive</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">    @type line_num: int</span>
+<span class="sd">    @returns whether the given line was handled and output,</span>
+<span class="sd">        or nothing was done.</span>
+<span class="sd">    @rtype HandleRes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="n">parm_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">param_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3141,15 +3415,29 @@ We assume that self.curr_return_desc is a string!
 
     
   
-    <div class="desc"><p>Handle :raises and @raises.
-</br>        <b>line</b> (<b></i>str</i></b>): line to check for directive</br>        <b>line_num</b> (<b></i>int</i></b>): line number in original HTML file. Used for error msgs.</br>        <b>returns:</b> whether the given line was handled and output, or nothing was done.</br>        <b>return type:</b> HandleRes</br></p></div>
+    <div class="desc"><p>Handle :raises and @raises.</p>
+<p>@param line: line to check for directive
+@type line: str
+@param line_num: line number in original HTML file. Used for error msgs.
+@type line_num: int
+@returns whether the given line was handled and output,
+    or nothing was done.
+@rtype HandleRes</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.check_raises_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.check_raises_spec" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_raises_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Handle :raises and @raises.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: line to check for directive</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">    @type line_num: int</span>
+<span class="sd">    @returns whether the given line was handled and output,</span>
+<span class="sd">        or nothing was done.</span>
+<span class="sd">    @rtype HandleRes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">raises_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">raises_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">raises_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HandleRes</span><span class="o">.</span><span class="n">NOT_HANDLED</span>
@@ -3184,15 +3472,29 @@ We assume that self.curr_return_desc is a string!
 
     
   
-    <div class="desc"><p>Handle :return and @return.
-</br>        <b>line</b> (<b></i>str</i></b>): line to check for directive</br>        <b>line_num</b> (<b></i>int</i></b>): line number in original HTML file. Used for error msgs.</br>        <b>returns:</b> whether the given line was handled and output, or nothing was done.</br>        <b>return type:</b> HandleRes</br></p></div>
+    <div class="desc"><p>Handle :return and @return.</p>
+<p>@param line: line to check for directive
+@type line: str
+@param line_num: line number in original HTML file. Used for error msgs.
+@type line_num: int
+@returns whether the given line was handled and output,
+    or nothing was done.
+@rtype HandleRes</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.check_return_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.check_return_spec" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_return_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Handle :return and @return.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: line to check for directive</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">    @type line_num: int</span>
+<span class="sd">    @returns whether the given line was handled and output,</span>
+<span class="sd">        or nothing was done.</span>
+<span class="sd">    @rtype HandleRes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">return_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">return_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">return_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HandleRes</span><span class="o">.</span><span class="n">NOT_HANDLED</span>
@@ -3234,15 +3536,29 @@ We assume that self.curr_return_desc is a string!
 
     
   
-    <div class="desc"><p>Handle :rtype and @rtype.
-</br>        <b>line</b> (<b></i>str</i></b>): line to check for directive</br>        <b>line_num</b> (<b></i>int</i></b>): line number in original HTML file. Used for error msgs.</br>        <b>returns:</b> whether the given line was handled and output, or nothing was done.</br>        <b>return type:</b> HandleRes</br></p></div>
+    <div class="desc"><p>Handle :rtype and @rtype.</p>
+<p>@param line: line to check for directive
+@type line: str
+@param line_num: line number in original HTML file. Used for error msgs.
+@type line_num: int
+@returns whether the given line was handled and output,
+    or nothing was done.
+@rtype HandleRes</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.check_rtype_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.check_rtype_spec" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_rtype_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Handle :rtype and @rtype.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: line to check for directive</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">    @type line_num: int</span>
+<span class="sd">    @returns whether the given line was handled and output,</span>
+<span class="sd">        or nothing was done.</span>
+<span class="sd">    @rtype HandleRes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="n">rtype_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">rtype_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">rtype_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3279,15 +3595,31 @@ We assume that self.curr_return_desc is a string!
 
     
   
-    <div class="desc"><p>Handle :type and @type.
-</br>        <b>line</b> (<b></i>str</i></b>): line to check for directive</br>        <b>line_num</b> (<b></i>int</i></b>): line number in original HTML file. Used for error msgs.</br>        <b>returns:</b> whether the given line was handled and output, or nothing was done.</br>        <b>return type:</b> HandleRes</br>        <b>raises:</b> NoTypeError, NoParamError, ParamTypeMismatch</br></p></div>
+    <div class="desc"><p>Handle :type and @type.</p>
+<p>@param line: line to check for directive
+@type line: str
+@param line_num: line number in original HTML file. Used for error msgs.
+@type line_num: int
+@returns whether the given line was handled and output,
+    or nothing was done.
+@rtype HandleRes
+@raises NoTypeError, NoParamError, ParamTypeMismatch</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.check_type_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.check_type_spec" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_type_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">line_num</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Handle :type and @type.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): line to check for directive&lt;/br&gt;        &lt;b&gt;line_num&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line number in original HTML file. Used for error msgs.&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; whether the given line was handled and output, or nothing was done.&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; HandleRes&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError, NoParamError, ParamTypeMismatch&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: line to check for directive</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @param line_num: line number in original HTML file. Used for error msgs.</span>
+<span class="sd">    @type line_num: int</span>
+<span class="sd">    @returns whether the given line was handled and output,</span>
+<span class="sd">        or nothing was done.</span>
+<span class="sd">    @rtype HandleRes</span>
+<span class="sd">    @raises NoTypeError, NoParamError, ParamTypeMismatch</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="n">type_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseInfo</span><span class="o">.</span><span class="n">type_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     
@@ -3352,8 +3684,12 @@ We assume that self.curr_return_desc is a string!
   
     <div class="desc"><p>Handles either raising error, printing
 warning to stderr, or staying silent. All
-controlled by parameters to constructor.
-</br>        <b>msg</b> (<b></i>str</i></b>): msg to use for error msg or warning</br>        <b>error_inst</b> (<b></i>Exception</i></b>): instance of error to raise. Only needed if raise_errors is True in the constructor call.</br></p></div>
+controlled by parameters to constructor.</p>
+<p>@param msg: msg to use for error msg or warning
+@type msg: str
+@param error_inst: instance of error to raise. Only needed
+    if raise_errors is True in the constructor call.
+@type error_inst: Exception</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.error_notify', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.error_notify" class="source">
@@ -3362,7 +3698,13 @@ controlled by parameters to constructor.
 <span class="sd">    Handles either raising error, printing</span>
 <span class="sd">    warning to stderr, or staying silent. All</span>
 <span class="sd">    controlled by parameters to constructor.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;msg&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): msg to use for error msg or warning&lt;/br&gt;        &lt;b&gt;error_inst&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;Exception&lt;/i&gt;&lt;/b&gt;): instance of error to raise. Only needed if raise_errors is True in the constructor call.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param msg: msg to use for error msg or warning</span>
+<span class="sd">    @type msg: str</span>
+<span class="sd">    @param error_inst: instance of error to raise. Only needed</span>
+<span class="sd">        if raise_errors is True in the constructor call.</span>
+<span class="sd">    @type error_inst: Exception</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_errors</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">error_inst</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
@@ -3389,10 +3731,15 @@ controlled by parameters to constructor.
     <div class="desc"><p>If a parameter spec is being constructed, finish it. If
 no parameter spec is being constructed, do nothing. If
 type_found is False, and client has indicated force_type_spec
-when instantiating this object, an error is raised.
-</br>        Parameters specs are closed adding a line separator if
-non is already part of the param_desc part of curr_parm_match.<br />
-</br>        <b>type_found</b> (<b></i>bool</i></b>): whether a type specification was found</br>        <b>line_no</b> (<b></i>int</i></b>): line in which parameter spec was found. Used in error messages.</br>        <b>raises:</b> NoTypeError</br></p></div>
+when instantiating this object, an error is raised.</p>
+<p>Parameters specs are closed adding a line separator if
+non is already part of the param_desc part of curr_parm_match.  </p>
+<p>@param type_found: whether a type specification was found
+@type type_found: bool
+@param line_no: line in which parameter spec was found. Used
+    in error messages.
+@type line_no: int
+@raised NoTypeError</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.finish_parameter_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.finish_parameter_spec" class="source">
@@ -3402,9 +3749,17 @@ non is already part of the param_desc part of curr_parm_match.<br />
 <span class="sd">    no parameter spec is being constructed, do nothing. If</span>
 <span class="sd">    type_found is False, and client has indicated force_type_spec</span>
 <span class="sd">    when instantiating this object, an error is raised.</span>
-<span class="sd">    &lt;/br&gt;        Parameters specs are closed adding a line separator if</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters specs are closed adding a line separator if</span>
 <span class="sd">    non is already part of the param_desc part of curr_parm_match.  </span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;type_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &lt;b&gt;raises:&lt;/b&gt; NoTypeError&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param type_found: whether a type specification was found</span>
+<span class="sd">    @type type_found: bool</span>
+<span class="sd">    @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">        in error messages.</span>
+<span class="sd">    @type line_no: int</span>
+<span class="sd">    @raised NoTypeError</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span>
@@ -3437,10 +3792,14 @@ non is already part of the param_desc part of curr_parm_match.<br />
     
   
     <div class="desc"><p>If a return spec is being constructed, finish it. If
-no return spec is being constructed, do nothing.
-</br>        Return specs are closed adding a line separator if
-non is already part of the return_desc part of curr_return_desc.<br />
-</br>        <b>rtype_found</b> (<b></i>bool</i></b>): whether a type specification was found</br>        <b>line_no</b> (<b></i>int</i></b>): line in which parameter spec was found. Used in error messages.</br></p></div>
+no return spec is being constructed, do nothing.</p>
+<p>Return specs are closed adding a line separator if
+non is already part of the return_desc part of curr_return_desc.  </p>
+<p>@param rtype_found: whether a type specification was found
+@type rtype_found: bool      <br />
+@param line_no: line in which parameter spec was found. Used
+    in error messages.
+@type line_no: int</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.finish_return_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.finish_return_spec" class="source">
@@ -3448,9 +3807,16 @@ non is already part of the return_desc part of curr_return_desc.<br />
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    If a return spec is being constructed, finish it. If</span>
 <span class="sd">    no return spec is being constructed, do nothing.</span>
-<span class="sd">    &lt;/br&gt;        Return specs are closed adding a line separator if</span>
+<span class="sd">    </span>
+<span class="sd">    Return specs are closed adding a line separator if</span>
 <span class="sd">    non is already part of the return_desc part of curr_return_desc.  </span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;rtype_found&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;bool&lt;/i&gt;&lt;/b&gt;): whether a type specification was found&lt;/br&gt;        &lt;b&gt;line_no&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;int&lt;/i&gt;&lt;/b&gt;): line in which parameter spec was found. Used in error messages.&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param rtype_found: whether a type specification was found</span>
+<span class="sd">    @type rtype_found: bool        </span>
+<span class="sd">    @param line_no: line in which parameter spec was found. Used</span>
+<span class="sd">        in error messages.</span>
+<span class="sd">    @type line_no: int</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span>
@@ -3484,8 +3850,11 @@ non is already part of the return_desc part of curr_return_desc.<br />
   
     <div class="desc"><p>Both, parameter and return specifications can 
 run across multiple lines. Those lines need
-to be collected and placed into one string.
-</br>        <b>line</b> (<b></i>str</i></b>): current line to parse</br>        <b>returns:</b> True if a multiline was detected, else False</br>        <b>return type:</b> bool</br></p></div>
+to be collected and placed into one string.</p>
+<p>@param line: current line to parse
+@type line: str
+@returns True if a multiline was detected, else False
+@rtype bool</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.handle_multiline_spec', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.handle_multiline_spec" class="source">
@@ -3494,7 +3863,12 @@ to be collected and placed into one string.
 <span class="sd">    Both, parameter and return specifications can </span>
 <span class="sd">    run across multiple lines. Those lines need</span>
 <span class="sd">    to be collected and placed into one string.</span>
-<span class="sd">    &lt;/br&gt;        &lt;b&gt;line&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;str&lt;/i&gt;&lt;/b&gt;): current line to parse&lt;/br&gt;        &lt;b&gt;returns:&lt;/b&gt; True if a multiline was detected, else False&lt;/br&gt;        &lt;b&gt;return type:&lt;/b&gt; bool&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    @param line: current line to parse</span>
+<span class="sd">    @type line: str</span>
+<span class="sd">    @returns True if a multiline was detected, else False</span>
+<span class="sd">    @rtype bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># In the middle of a multiline parm spec?</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_desc</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span>
@@ -3548,8 +3922,9 @@ to be collected and placed into one string.
     
   
     <div class="desc"><p>Goes through each HTML line looking for relevatn
-doc string snippets to transform 
-</br>        </br>        <b>in_fd</b> (<b></i>file-like</i></b>): input stream</br></p></div>
+doc string snippets to transform </p>
+<p>@param in_fd: input stream
+@type in_fd: file-like</p></div>
   <div class="source_cont">
   <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pdoc_prep.PdocPrep.parse', this);">Show source &equiv;</a></p>
   <div id="source-pdoc_prep.PdocPrep.parse" class="source">
@@ -3557,7 +3932,11 @@ doc string snippets to transform
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Goes through each HTML line looking for relevatn</span>
 <span class="sd">    doc string snippets to transform </span>
-<span class="sd">    &lt;/br&gt;        &lt;/br&gt;        &lt;b&gt;in_fd&lt;/b&gt; (&lt;b&gt;&lt;/i&gt;file-like&lt;/i&gt;&lt;/b&gt;): input stream&lt;/br&gt;        &#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    @param in_fd: input stream</span>
+<span class="sd">    @type in_fd: file-like</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="bp">self</span><span class="o">.</span><span class="n">curr_parm_match</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">curr_return_desc</span> <span class="o">=</span> <span class="bp">None</span>
