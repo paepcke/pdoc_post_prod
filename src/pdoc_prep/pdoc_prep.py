@@ -329,8 +329,6 @@ class PdocPrep(object):
         finally:
             # Ensure that a possibly open parameter spec is closed:
             if self.curr_parm_match is not None:
-                (_parm_name, parm_desc) = self.curr_parm_match
-                self.out_fd.write(parm_desc.rstrip())
                 self.finish_parameter_spec(type_found=False, line_no=line_num)
             # Same for return spec:                
             elif self.curr_return_desc is not None:
@@ -398,7 +396,6 @@ class PdocPrep(object):
                     # Throw error or print warning:
                     self.error_notify(msg, NoTypeError)
                 self.finish_parameter_spec()
-                self.curr_parm_match = None
                 
             # The regexp groups look like this:
             #    ('       ', ' tableName', ' name of new table')
@@ -471,11 +468,8 @@ class PdocPrep(object):
                 return HandleRes.NOT_HANDLED
             
             # Finally...all is good:
-            self.out_fd.write('(<b></i>' + type_desc + '</i></b>): ' + \
-                             parm_desc
-                             )
+            self.out_fd.write('(<b></i>' + type_desc + '</i></b>): ')
             self.finish_parameter_spec(type_found=True, line_no=line_num)
-            self.curr_parm_match = None
             return HandleRes.HANDLED
         # Not a type spec, and no prior param spec:
         return HandleRes.NOT_HANDLED
@@ -631,6 +625,7 @@ class PdocPrep(object):
             self.error_notify('No type spec found for parameter %s at line %s' %\
                               (parm_name, line_no), NoTypeError
                               )
+        self.out_fd.write(parm_desc)
         if not parm_desc.endswith(self.parseInfo.line_sep):
             self.out_fd.write(self.parseInfo.line_sep)
 
@@ -751,14 +746,16 @@ class PdocPrep(object):
         
 if __name__ == '__main__':
 
-    # Create preprocessed file from this file:
+    # A couple of test cases, though test_pdoc_prep.py unittests
+    # is the way to test.
+    
+#     with open(os.path.join(os.path.dirname(__file__), 'test_doc.py'), 'r') as fd:
+#         PdocPrep(fd, delimiter_char=':')
+#     sys.exit()
+    
+    # For testing: create preprocessed file from this file:
 #     with open(os.path.join(os.path.dirname(__file__), 'pdoc_prep.py'), 'r') as fd:
 #         PdocPrep(fd)
-#     sys.exit()
-
-#     with open(os.path.join(os.path.dirname(__file__), 
-#                            '/Users/paepcke/EclipseWorkspacesNew/pymysql_utils/pymysql_utils/pymysql_utils.py'), 'r') as fd:
-#         PdocPrep(fd, delimiter_char=':')
 #     sys.exit()
         
     parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]),
