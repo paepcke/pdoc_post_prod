@@ -2,8 +2,54 @@
 '''
 Created on Dec 25, 2018
 
-@author: paepcke
+Convenience script for automating:
+
+<ol>
+<li>Pre-process a python module to handle :param, :type, @param, @type, etc.
+   The procedure will create a temporary file.</li>
+<li>Run pdoc over the temporary file</li>
+<li>Move pdoc's result into a final destination.</li>
+</ol>
+Assuming cwd is root of this project, then to generate
+pdoc documentation HTML for module pdoc_prep.py into the
+'docs' subdirectory:
+<pre>
+src/pdoc_prep/pdoc_run.py --html-dir docs src/pdoc_prep/pdoc_prep.py
+</pre>    
+<b>Options:</b><br>
+
+<pre>
+  --delimiter     one of ':' or '@'. Default: '@'. 
+                  Specifies whether function parameters are
+                  introduced with colon or at-sign.
+  --typecheck     If present, insist that if @param is
+                  specified for a paramter, then a 
+                  corresponding @type spec must be present. 
+                  Same for @return and @rtype.
+                  
+all subsequent options are passed to pdoc, though there is
+no need to specify '--html'.
+</pre>
+    
+<b>Positional:</b><br>
+
+   module-to-document [pdoc-ident_name as per pdoc]     
+                  
+<b>Author</b> Andreas Paepcke
 '''
+
+# Note: to run this file through documentation, need special procedure
+# because of loading issues. At project root:
+                  
+# cat src/pdoc_prep/pdoc_run.py | src/pdoc_prep/pdoc_prep.py > src/pdoc_prep/tmp_pdoc_run.py
+# sed 's/\(^from [.]\{0,1\}pdoc_prep\)/#\1/g' src/pdoc_prep/tmp_pdoc_run.py> src/pdoc_prep/tmp_pdoc_run_no_imports.py
+# pdoc --html --html-dir docs src/pdoc_prep/tmp_pdoc_run_no_imports.py
+# sed  's/tmp_pdoc_run_no_imports/pdoc_run/g' docs/tmp_pdoc_run_no_imports.m.html > docs/pdoc_run.m.html
+# rm src/pdoc_prep/tmp*
+# rm docs/tmp*
+
+# That will put pdoc_run.m.html into docs
+
 import argparse
 import os
 import re
@@ -70,7 +116,9 @@ class PdocRunner(object):
             # Get a CompletedProcess instance from running pdoc:
     
             pdoc_cmd = self.pdoc_path() + ' ' + ' '.join(pdoc_args)
-            cmd_res = subprocess.run(pdoc_cmd, shell=True)
+            cmd_res = subprocess.run(pdoc_cmd, 
+                                     shell=True
+                                     )
             if cmd_res.returncode != 0:
                 print("Error during pdoc run; quitting.")
                 sys.exit()
