@@ -58,7 +58,7 @@ import subprocess
 import sys
 import tempfile
 
-from .pdoc_prep import PdocPrep
+from pdoc_prep import PdocPrep
 
 
 class PdocRunner(object):

@@ -12,7 +12,7 @@ setup(
     setup_requires   = [],
     install_requires = ['pdoc>=0.3.2',
                         ],
-
+    tests_require    = ['nose>=1.3.7'],
     # Unit tests; they are initiated via 'python setup.py test'
     test_suite       = 'nose.collector', 
 
@@ -22,6 +22,7 @@ setup(
     long_description_content_type="text/markdown",
     description="Add processing of sphinx-like docstring specs to pdoc via preprocessor.",
     long_description=long_description,
+    scripts=['bin/pdoc_run'],
     license="BSD",
     keywords="pdoc, python documentation",
     url="https://github.com/paepcke/pdoc_prep"
