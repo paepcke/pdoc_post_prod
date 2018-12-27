@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 
-from pdoc_prep import PdocPrep
+from .pdoc_prep import PdocPrep
 
 
 class PdocRunner(object):
@@ -26,7 +26,7 @@ class PdocRunner(object):
         
         (python_module, pymod_pos) = self.get_module_from_args(pdoc_arg_list)
         
-        python_module = os.path.abspath(python_module)
+        python_module = os.path.abspath(os.path.expanduser(python_module))
         if not os.path.exists(python_module):
             raise ValueError("Python module %s does not exist." % python_module)
         
