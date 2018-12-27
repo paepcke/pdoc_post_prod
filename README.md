@@ -19,7 +19,7 @@ will show up literally. If a module to be documentated is  instead preprocessed 
           return type: bool
 ```
 
-The keywords, such as 'returns' will be bold faced.
+The keywords, such as **returns**, and parameters, such as **foo (int)** will be bold faced.
 
 **Note:** whether '**:**' is used to introduce a specification, or '**@**' is controlled from a command line option. See main section below.
 
@@ -31,7 +31,7 @@ This command may be run from the project root, from within the evolving docs dir
 
 ## Notes
 
-**Note 1**
+**Note 1:**
 You may see:
 
     DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
