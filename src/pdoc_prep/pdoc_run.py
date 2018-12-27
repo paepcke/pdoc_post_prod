@@ -26,8 +26,7 @@ class PdocRunner(object):
         
         (python_module, pymod_pos) = self.get_module_from_args(pdoc_arg_list)
         
-        if not os.path.isabs(python_module):
-            python_module = os.path.join(os.path.dirname(__file__), python_module)
+        python_module = os.path.abspath(python_module)
         if not os.path.exists(python_module):
             raise ValueError("Python module %s does not exist." % python_module)
         
@@ -154,7 +153,7 @@ class PdocRunner(object):
 
         try:
             html_out_dir_pos = pdoc_arg_list.index('--html-dir')
-            html_out_dir     = pdoc_arg_list[html_out_dir_pos + 1]
+            html_out_dir     = os.path.abspath(pdoc_arg_list[html_out_dir_pos + 1])
         except ValueError:
             # No html out dir specified for pdoc. No problem,
             # make it same dir as the python module being documented:
