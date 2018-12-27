@@ -12,12 +12,14 @@ The pdoc HTML output does not recognize function/method parameter and return spe
        :rtype bool
 
 
-will show up literally. If a module to be documentated is  instead preprocessed using this scripts, then the pdoc  documentation will look like this:
+will show up literally. If a module to be documentated is  instead preprocessed using this script, then the pdoc documentation will look like this:
 ```
           foo (int): controls whether bar is set to None
           returns True for success, else False
           return type: bool
 ```
+
+The keywords, such as 'returns' will be bold faced.
 
 **Note:** whether '**:**' is used to introduce a specification, or '**@**' is controlled from a command line option. See main section below.
 
